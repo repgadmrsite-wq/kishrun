@@ -18,16 +18,16 @@
             <section class="menu-section">
                 <h2>۱. نان را انتخاب کنید</h2>
                 <div class="options-container" id="bread-options">
-                    <div class="option-card" data-price="10000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="باگت">
+                    <div class="option-card" data-price="10000" data-name="باگت">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="باگت">
                         <h3>باگت</h3>
                     </div>
-                    <div class="option-card" data-price="12000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="چاودار">
+                    <div class="option-card" data-price="12000" data-name="چاودار">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="چاودار">
                         <h3>چاودار</h3>
                     </div>
-                    <div class="option-card" data-price="15000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="سبوس‌دار">
+                    <div class="option-card" data-price="15000" data-name="سبوس‌دار">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="سبوس‌دار">
                         <h3>سبوس‌دار</h3>
                     </div>
                 </div>
@@ -37,20 +37,20 @@
             <section class="menu-section">
                 <h2>۲. سوسیس را انتخاب کنید (اختیاری)</h2>
                 <div class="options-container" id="sausage-options">
-                    <div class="option-card" data-price="0">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="هیچکدام">
+                    <div class="option-card" data-price="0" data-name="هیچکدام">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="هیچکدام">
                         <h3>هیچکدام</h3>
                     </div>
-                    <div class="option-card" data-price="25000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="کوکتل">
+                    <div class="option-card" data-price="25000" data-name="کوکتل">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="کوکتل">
                         <h3>کوکتل</h3>
                     </div>
-                    <div class="option-card" data-price="30000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="کراکف">
+                    <div class="option-card" data-price="30000" data-name="کراکف">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="کراکف">
                         <h3>کراکف</h3>
                     </div>
-                    <div class="option-card" data-price="35000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="هات‌داگ">
+                    <div class="option-card" data-price="35000" data-name="هات‌داگ">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="هات‌داگ">
                         <h3>هات‌داگ</h3>
                     </div>
                 </div>
@@ -60,20 +60,20 @@
             <section class="menu-section">
                 <h2>۳. کالباس را انتخاب کنید (اختیاری)</h2>
                 <div class="options-container" id="ham-options">
-                     <div class="option-card" data-price="0">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="هیچکدام">
+                     <div class="option-card" data-price="0" data-name="هیچکدام">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="هیچکدام">
                         <h3>هیچکدام</h3>
                     </div>
-                    <div class="option-card" data-price="20000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="مرغ">
+                    <div class="option-card" data-price="20000" data-name="مرغ">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="مرغ">
                         <h3>مرغ</h3>
                     </div>
-                    <div class="option-card" data-price="28000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="گوشت">
+                    <div class="option-card" data-price="28000" data-name="گوشت">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="گوشت">
                         <h3>گوشت</h3>
                     </div>
-                    <div class="option-card" data-price="22000">
-                        <img src="https://images.undraw.co/undraw_breakfast_psiw.svg" alt="پپرونی">
+                    <div class="option-card" data-price="22000" data-name="پپرونی">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="پپرونی">
                         <h3>پپرونی</h3>
                     </div>
                 </div>
@@ -84,8 +84,19 @@
             <div class="total-price">
                 <h2>قیمت نهایی: <span id="total-price">۰</span> تومان</h2>
             </div>
+            <button id="order-btn" class="order-button">ثبت سفارش</button>
         </footer>
     </div>
+
+    <div id="order-summary-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>خلاصه سفارش شما</h2>
+            <div id="modal-order-details"></div>
+            <p class="modal-footer-message">برای تکمیل سفارش و پرداخت، با شما تماس خواهیم گرفت.</p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
