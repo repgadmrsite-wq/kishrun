@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منو ساندویچ سرد</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>منو ساندویچ سرد</h1>
+        <form id="sandwich-form">
+            <div class="form-group">
+                <label for="bread">نوع نان:</label>
+                <select id="bread" name="bread">
+                    <option value="10000">باگت - ۱۰,۰۰۰ تومان</option>
+                    <option value="12000">چاودار - ۱۲,۰۰۰ تومان</option>
+                    <option value="15000">سبوس‌دار - ۱۵,۰۰۰ تومان</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sausage">نوع سوسیس:</label>
+                <select id="sausage" name="sausage">
+                    <option value="25000">کوکتل - ۲۵,۰۰۰ تومان</option>
+                    <option value="30000">کراکف - ۳۰,۰۰۰ تومان</option>
+                    <option value="35000">هات‌داگ - ۳۵,۰۰۰ تومان</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ham">نوع کالباس:</label>
+                <select id="ham" name="ham">
+                    <option value="20000">مرغ - ۲۰,۰۰۰ تومان</option>
+                    <option value="28000">گوشت - ۲۸,۰۰۰ تومان</option>
+                    <option value="22000">پپرونی - ۲۲,۰۰۰ تومان</option>
+                </select>
+            </div>
+        </form>
+        <div class="total-price">
+            <h2>قیمت کل: <span id="total-price">۰</span> تومان</h2>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
