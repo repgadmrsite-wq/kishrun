@@ -7,73 +7,91 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- SVG Definitions -->
+    <svg style="display: none;">
+      <defs>
+        <symbol id="sandwich-icon" viewBox="0 0 32 32">
+          <path class="sandwich-bread" d="M4,20 H28 L24,26 H8 Z"/>
+          <path class="sandwich-lettuce" d="M4,20 C6,16 10,16 12,20 C14,16 18,16 20,20 C22,16 26,16 28,20"/>
+          <path class="sandwich-tomato" d="M6,18 H26 V21 H6Z"/>
+          <path class="sandwich-bread" d="M4,18 H28 L26,12 H6 Z"/>
+        </symbol>
+      </defs>
+    </svg>
+
     <div class="container">
         <header>
-            <h1 class="logo">هیولا</h1>
+            <div class="logo">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+                  <circle cx="50" cy="50" r="45" class="monster-body"/>
+                  <circle cx="35" cy="40" r="8" class="monster-eye"/>
+                  <circle cx="65" cy="40" r="8" class="monster-eye"/>
+                  <circle cx="37" cy="42" r="3" class="monster-pupil"/>
+                  <circle cx="67" cy="42" r="3" class="monster-pupil"/>
+                  <path d="M 30 65 Q 50 80 70 65" class="monster-smile"/>
+                </svg>
+            </div>
             <p class="tagline">ساندویچ سرد خودت رو بساز!</p>
         </header>
 
         <main id="sandwich-builder">
-            <!-- Bread Section -->
             <section class="menu-section">
                 <h2>۱. نان را انتخاب کنید</h2>
                 <div class="options-container" id="bread-options">
                     <div class="option-card" data-price="10000" data-name="باگت">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="باگت">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>باگت</h3>
                     </div>
                     <div class="option-card" data-price="12000" data-name="چاودار">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="چاودار">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>چاودار</h3>
                     </div>
                     <div class="option-card" data-price="15000" data-name="سبوس‌دار">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="سبوس‌دار">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>سبوس‌دار</h3>
                     </div>
                 </div>
             </section>
 
-            <!-- Sausage Section -->
             <section class="menu-section">
                 <h2>۲. سوسیس را انتخاب کنید (اختیاری)</h2>
                 <div class="options-container" id="sausage-options">
                     <div class="option-card" data-price="0" data-name="هیچکدام">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="هیچکدام">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>هیچکدام</h3>
                     </div>
                     <div class="option-card" data-price="25000" data-name="کوکتل">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="کوکتل">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>کوکتل</h3>
                     </div>
                     <div class="option-card" data-price="30000" data-name="کراکف">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="کراکف">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>کراکف</h3>
                     </div>
                     <div class="option-card" data-price="35000" data-name="هات‌داگ">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="هات‌داگ">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>هات‌داگ</h3>
                     </div>
                 </div>
             </section>
 
-            <!-- Ham Section -->
             <section class="menu-section">
                 <h2>۳. کالباس را انتخاب کنید (اختیاری)</h2>
                 <div class="options-container" id="ham-options">
                      <div class="option-card" data-price="0" data-name="هیچکدام">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="هیچکدام">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>هیچکدام</h3>
                     </div>
                     <div class="option-card" data-price="20000" data-name="مرغ">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="مرغ">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>مرغ</h3>
                     </div>
                     <div class="option-card" data-price="28000" data-name="گوشت">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="گوشت">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>گوشت</h3>
                     </div>
                     <div class="option-card" data-price="22000" data-name="پپرونی">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Sandwich_icon.svg" alt="پپرونی">
+                        <svg class="card-icon"><use href="#sandwich-icon"></use></svg>
                         <h3>پپرونی</h3>
                     </div>
                 </div>
