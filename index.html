@@ -3,41 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منو ساندویچ سرد</title>
+    <title>منو هیولا - ساندویچ سرد</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>منو ساندویچ سرد</h1>
-        <form id="sandwich-form">
-            <div class="form-group">
-                <label for="bread">نوع نان:</label>
-                <select id="bread" name="bread">
-                    <option value="10000">باگت - ۱۰,۰۰۰ تومان</option>
-                    <option value="12000">چاودار - ۱۲,۰۰۰ تومان</option>
-                    <option value="15000">سبوس‌دار - ۱۵,۰۰۰ تومان</option>
-                </select>
+        <header>
+            <h1 class="logo">هیولا</h1>
+            <p class="tagline">ساندویچ سرد خودت رو بساز!</p>
+        </header>
+
+        <main id="sandwich-builder">
+            <!-- Bread Section -->
+            <section class="menu-section">
+                <h2>۱. نان را انتخاب کنید</h2>
+                <div class="options-container" id="bread-options">
+                    <div class="option-card" data-price="10000">
+                        <img src="https://assets.codepen.io/652/baguette.png" alt="باگت">
+                        <h3>باگت</h3>
+                    </div>
+                    <div class="option-card" data-price="12000">
+                        <img src="https://assets.codepen.io/652/rye-bread.png" alt="چاودار">
+                        <h3>چاودار</h3>
+                    </div>
+                    <div class="option-card" data-price="15000">
+                        <img src="https://assets.codepen.io/652/whole-wheat-bread.png" alt="سبوس‌دار">
+                        <h3>سبوس‌دار</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sausage Section -->
+            <section class="menu-section">
+                <h2>۲. سوسیس را انتخاب کنید (اختیاری)</h2>
+                <div class="options-container" id="sausage-options">
+                    <div class="option-card" data-price="0">
+                        <img src="https://assets.codepen.io/652/no-thanks.png" alt="هیچکدام">
+                        <h3>هیچکدام</h3>
+                    </div>
+                    <div class="option-card" data-price="25000">
+                        <img src="https://assets.codepen.io/652/sausage.png" alt="کوکتل">
+                        <h3>کوکتل</h3>
+                    </div>
+                    <div class="option-card" data-price="30000">
+                        <img src="https://assets.codepen.io/652/krakow-sausage.png" alt="کراکف">
+                        <h3>کراکف</h3>
+                    </div>
+                    <div class="option-card" data-price="35000">
+                        <img src="https://assets.codepen.io/652/hot-dog.png" alt="هات‌داگ">
+                        <h3>هات‌داگ</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ham Section -->
+            <section class="menu-section">
+                <h2>۳. کالباس را انتخاب کنید (اختیاری)</h2>
+                <div class="options-container" id="ham-options">
+                     <div class="option-card" data-price="0">
+                        <img src="https://assets.codepen.io/652/no-thanks.png" alt="هیچکدام">
+                        <h3>هیچکدام</h3>
+                    </div>
+                    <div class="option-card" data-price="20000">
+                        <img src="https://assets.codepen.io/652/ham.png" alt="مرغ">
+                        <h3>مرغ</h3>
+                    </div>
+                    <div class="option-card" data-price="28000">
+                        <img src="https://assets.codepen.io/652/beef-ham.png" alt="گوشت">
+                        <h3>گوشت</h3>
+                    </div>
+                    <div class="option-card" data-price="22000">
+                        <img src="https://assets.codepen.io/652/pepperoni.png" alt="پپرونی">
+                        <h3>پپرونی</h3>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="total-price">
+                <h2>قیمت نهایی: <span id="total-price">۰</span> تومان</h2>
             </div>
-            <div class="form-group">
-                <label for="sausage">نوع سوسیس:</label>
-                <select id="sausage" name="sausage">
-                    <option value="25000">کوکتل - ۲۵,۰۰۰ تومان</option>
-                    <option value="30000">کراکف - ۳۰,۰۰۰ تومان</option>
-                    <option value="35000">هات‌داگ - ۳۵,۰۰۰ تومان</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="ham">نوع کالباس:</label>
-                <select id="ham" name="ham">
-                    <option value="20000">مرغ - ۲۰,۰۰۰ تومان</option>
-                    <option value="28000">گوشت - ۲۸,۰۰۰ تومان</option>
-                    <option value="22000">پپرونی - ۲۲,۰۰۰ تومان</option>
-                </select>
-            </div>
-        </form>
-        <div class="total-price">
-            <h2>قیمت کل: <span id="total-price">۰</span> تومان</h2>
-        </div>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>
