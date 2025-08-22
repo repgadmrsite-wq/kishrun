@@ -82,5 +82,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function createSnowflake() {
+        const snowContainer = document.getElementById('snow-container');
+        const snowflake = document.createElement('div');
+
+        snowflake.classList.add('snowflake');
+
+        const size = Math.random() * 5 + 2; // size between 2px and 7px
+        snowflake.style.width = `${size}px`;
+        snowflake.style.height = `${size}px`;
+
+        snowflake.style.left = `${Math.random() * 100}vw`;
+        snowflake.style.animationDuration = `${Math.random() * 10 + 8}s`; // 8s to 18s
+        snowflake.style.animationDelay = `${Math.random() * 10}s`;
+        snowflake.style.opacity = Math.random() * 0.7 + 0.3; // 0.3 to 1.0
+
+        snowContainer.appendChild(snowflake);
+    }
+
+    function initSnowfall() {
+        const numberOfSnowflakes = 150;
+        for (let i = 0; i < numberOfSnowflakes; i++) {
+            createSnowflake();
+        }
+    }
+
     initializeMenu();
+    initSnowfall();
 });
