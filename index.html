@@ -17,65 +17,31 @@
         </header>
 
         <main id="sandwich-builder">
+            <!-- Sections for bread, sausage, ham -->
             <section class="menu-section">
                 <h2>۱. نان را انتخاب کنید</h2>
                 <div class="options-container" id="bread-options">
-                    <div class="option-card" data-price="10000" data-name="باگت">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>باگت</h3>
-                    </div>
-                    <div class="option-card" data-price="12000" data-name="چاودار">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>چاودار</h3>
-                    </div>
-                    <div class="option-card" data-price="15000" data-name="سبوس‌دار">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>سبوس‌دار</h3>
-                    </div>
+                    <div class="option-card" data-price="10000" data-name="باگت"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>باگت</h3></div>
+                    <div class="option-card" data-price="12000" data-name="چاودار"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>چاودار</h3></div>
+                    <div class="option-card" data-price="15000" data-name="سبوس‌دار"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>سبوس‌دار</h3></div>
                 </div>
             </section>
-
             <section class="menu-section">
                 <h2>۲. سوسیس را انتخاب کنید (اختیاری)</h2>
                 <div class="options-container" id="sausage-options">
-                    <div class="option-card" data-price="0" data-name="هیچکدام">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>هیچکدام</h3>
-                    </div>
-                    <div class="option-card" data-price="25000" data-name="کوکتل">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>کوکتل</h3>
-                    </div>
-                    <div class="option-card" data-price="30000" data-name="کراکف">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>کراکف</h3>
-                    </div>
-                    <div class="option-card" data-price="35000" data-name="هات‌داگ">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>هات‌داگ</h3>
-                    </div>
+                    <div class="option-card" data-price="0" data-name="هیچکدام"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>هیچکدام</h3></div>
+                    <div class="option-card" data-price="25000" data-name="کوکتل"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>کوکتل</h3></div>
+                    <div class="option-card" data-price="30000" data-name="کراکف"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>کراکف</h3></div>
+                    <div class="option-card" data-price="35000" data-name="هات‌داگ"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>هات‌داگ</h3></div>
                 </div>
             </section>
-
             <section class="menu-section">
                 <h2>۳. کالباس را انتخاب کنید (اختیاری)</h2>
                 <div class="options-container" id="ham-options">
-                     <div class="option-card" data-price="0" data-name="هیچکدام">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>هیچکدام</h3>
-                    </div>
-                    <div class="option-card" data-price="20000" data-name="مرغ">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>مرغ</h3>
-                    </div>
-                    <div class="option-card" data-price="28000" data-name="گوشت">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>گوشت</h3>
-                    </div>
-                    <div class="option-card" data-price="22000" data-name="پپرونی">
-                        <img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ">
-                        <h3>پپرونی</h3>
-                    </div>
+                     <div class="option-card" data-price="0" data-name="هیچکدام"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>هیچکدام</h3></div>
+                     <div class="option-card" data-price="20000" data-name="مرغ"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>مرغ</h3></div>
+                     <div class="option-card" data-price="28000" data-name="گوشت"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>گوشت</h3></div>
+                     <div class="option-card" data-price="22000" data-name="پپرونی"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>پپرونی</h3></div>
                 </div>
             </section>
         </main>
@@ -91,9 +57,36 @@
     <div id="order-summary-modal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h2>خلاصه سفارش شما</h2>
-            <div id="modal-order-details"></div>
-            <p class="modal-footer-message">برای تکمیل سفارش و پرداخت، با شما تماس خواهیم گرفت.</p>
+            <div id="modal-body">
+                <h2>خلاصه سفارش شما</h2>
+                <div id="modal-order-details"></div>
+                <hr>
+                <h2>اطلاعات ارسال</h2>
+                <form id="customer-form">
+                    <div class="form-group">
+                        <label for="sub-number">شماره اشتراک (اختیاری)</label>
+                        <input type="text" id="sub-number" name="sub-number" placeholder="اگر شماره اشتراک دارید وارد کنید">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-name">نام و نام خانوادگی</label>
+                        <input type="text" id="customer-name" name="customer-name" required placeholder="نام کامل خود را وارد کنید">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-phone">شماره تماس</label>
+                        <input type="tel" id="customer-phone" name="customer-phone" required placeholder="مثال: ۰۹۱۲۳۴۵۶۷۸۹">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-address">آدرس دقیق</label>
+                        <textarea id="customer-address" name="customer-address" rows="3" required placeholder="آدرس خود را برای ارسال وارد کنید"></textarea>
+                    </div>
+                    <button type="submit" class="zarinpal-button">پرداخت با زرین‌پال (شبیه‌سازی)</button>
+                </form>
+            </div>
+            <div id="modal-success-message" style="display: none; text-align: center;">
+                <h2>سفارش شما با موفقیت ثبت شد!</h2>
+                <p>از خرید شما متشکریم. به زودی برای هماهنگی با شما تماس می‌گیریم.</p>
+                <p>در حال انتقال به درگاه پرداخت... (شبیه‌سازی)</p>
+            </div>
         </div>
     </div>
 
