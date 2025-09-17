@@ -127,7 +127,7 @@
         primaryTheme: '#2193b0', // Oasis Blue
         accentTheme: '#6dd5ed', // Lighter Blue
         glowTheme: '#f9d423',   // Sand Gold
-        textColor: '#3a2e39'
+        textColor: '#fefae0'
       }
     },
     { id:"panda-zhigo", name:"پاندا کونگ فو کار", emoji:"🐼", img:"img/panda-zhigu-beef90.webp", description: "گوشت مخصوص ۹۰٪", tags: ["✨ خاص", "⭐️ پرفروش", "🥊 سنگین"],
@@ -152,7 +152,7 @@
         className: 'theme-migmig',
         soundId: 'migmig-sound',
         entrySoundId: 'migmig-sound',
-        charImage: 'https://hayola.hornspeed.com/img/mig-mig.webp',
+        charImage: 'https://hayola.hornspeed.com/img/mig-items.webp',
         entryEffect: 'roadrunner-zip',
         bgGradient: 'linear-gradient(to top, #fca311, #e9c46a)',
         primaryTheme: '#00b4d8',
@@ -218,7 +218,7 @@
         primaryTheme: '#588157',
         accentTheme: '#a3b18a',
         glowTheme: '#fefae0',
-        textColor: '#283618'
+        textColor: '#fefae0'
       }
     },
   ];
@@ -245,7 +245,7 @@
     { id:"special", label:"سس ویژه" },
   ];
   const LEVELS = [
-    { id:-1, label:"نریزید" }, { id:0, label:"کم" }, { id:1, label:"عادی" }, { id:2, label:"زیاد" }, { id:3, label:"خیلی زیاد" },
+    { id:-1, label:"نریزید" }, { id:0, label:"کم" }, { id:1, label:"عادی" }, { id:2, label:"زیاد" },
   ];
 
   const el = (sel, root=document)=> root.querySelector(sel);
@@ -1076,7 +1076,7 @@
                   <div class="menu-title">${m.emoji || ''} ${m.name}</div>
                   <div class="menu-description">${m.description || ''}</div>
                   <div class="tags-container">
-                        ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                        ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
                   </div>
                   <div class="menu-sub">
                     ${state.isHappy
@@ -1199,7 +1199,7 @@
               <div style="font-weight:700;margin-bottom:6px">کالباس اضافه</div>
               <input type="range" min="0" max="200" step="${it.extra.step}" value="${state.extraGrams}" id="extraRange"/>
               <div class="range-meta"><span>افزایش: ${state.extraGrams} گرم</span><span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span></div>
-              <div id="extraViz" class="extra-viz" style="margin-top:8px; height: 10px;">
+              <div class="extra-viz-wrapper">
                 ${renderExtraViz(it)}
               </div>
             </div>`:''}
