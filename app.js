@@ -143,6 +143,21 @@
         glowTheme: '#fde047'
       }
     },
+    { id:"migmig-turkey", name:"میگ میگ", emoji:"💨", img:"https://hayola.hornspeed.com/img/mig-mig.webp",
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:120000},{id:"250",label:"۲۵۰ گرم",price:200000},{id:"350",label:"۳۵۰ گرم",price:240000}],
+      extra:{step:50, unitPrice:20000}, customizable:true,
+      theme: {
+        className: 'theme-migmig',
+        soundId: 'migmig-sound',
+        entrySoundId: 'migmig-sound',
+        charImage: 'https://hayola.hornspeed.com/img/mig-mig.webp',
+        entryEffect: 'roadrunner-zip',
+        bgGradient: 'linear-gradient(to top, #fca311, #e9c46a)',
+        primaryTheme: '#00b4d8',
+        accentTheme: '#f4a261',
+        glowTheme: '#00b4d8'
+      }
+    },
     { id:"angry-birds-mix", name:"انگری بردز", emoji:"🐦", img:"img/angrybirds-mix.webp",
       sizes:[{id:"300",label:"۳۰۰ گرم",price:320000},{id:"400",label:"۴۰۰ گرم",price:420000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
@@ -344,6 +359,22 @@
     oliviehInterval = setInterval(createOliviehParticle, 300);
   }
 
+  function manageRoadRunnerEffect() {
+    const themeBgEffects = el("#theme-bg-effects");
+    const themeFgEffects = el("#theme-fg-effects");
+    if (!themeBgEffects || !themeFgEffects) return;
+
+    themeBgEffects.innerHTML += '<div class="desert-road"></div>';
+
+    const dustCloud = document.createElement('div');
+    dustCloud.className = 'dust-cloud';
+    themeFgEffects.appendChild(dustCloud);
+
+    dustCloud.addEventListener('animationend', () => {
+      dustCloud.remove();
+    }, { once: true });
+  }
+
   // State
   const state = {
     step:0,
@@ -395,6 +426,7 @@
       'panda-sound',
       'oscar-sound',
       'olvie-sound',
+      'migmig-sound',
       'ginjer-welcome',
       'big-sound',
       'sal-sound',
@@ -432,6 +464,7 @@
     els('.feather-particle').forEach(f => f.remove());
     if (oliviehInterval) clearInterval(oliviehInterval);
     els('.olivieh-particle').forEach(p => p.remove());
+    els('.desert-road, .dust-cloud').forEach(e => e.remove());
 
     setTimeout(() => {
       const theme = item && item.theme ? item.theme : defaultTheme;
@@ -699,6 +732,9 @@
         }
         if (theme.className === 'theme-olivieh') {
           manageOliviehEffect();
+        }
+        if (theme.className === 'theme-migmig') {
+          manageRoadRunnerEffect();
         }
         if (theme.className === 'theme-pat-mat') {
           themeCharImage.classList.add('pat-mat-entry');

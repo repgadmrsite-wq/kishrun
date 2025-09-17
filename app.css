@@ -1705,6 +1705,65 @@ input[type=range]::-moz-range-thumb {
   animation: swing 4s ease-in-out infinite;
 }
 
+/* --- Theme: Mig Mig (Road Runner) --- */
+.theme-migmig h1, .theme-migmig h2, .theme-migmig .quick-title, .theme-migmig .menu-title, .theme-migmig .btn {
+  font-style: italic;
+  transform: skewX(-10deg);
+}
+
+.theme-migmig .btn, .theme-migmig .level .btn {
+  background: linear-gradient(145deg, #d2691e, #8b4513); /* Wood gradient */
+  border: 4px solid #5C3317;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  border-radius: 8px 12px 8px 10px; /* Irregular shape */
+  font-weight: bold;
+}
+.theme-migmig .btn:hover {
+  background: linear-gradient(145deg, #e5823a, #a0522d);
+}
+.theme-migmig .btn.primary, .theme-migmig .level .btn[aria-pressed="true"] {
+  background: linear-gradient(145deg, var(--primary-theme), #0077b6); /* Sky Blue */
+  border-color: var(--accent-theme); /* Sandy Yellow */
+}
+
+/* --- Mig Mig Effects --- */
+@keyframes road-scroll {
+  from { background-position: 0 0; }
+  to { background-position: -2000px 0; }
+}
+
+.desert-road {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25vh;
+  background-image: url('https://www.transparenttextures.com/patterns/sand.png'), linear-gradient(to top, #c2b280, #dcd0a9);
+  background-size: 500px, auto;
+  animation: road-scroll 10s linear infinite;
+}
+
+@keyframes dust-cloud-zip {
+  0% { transform: translateX(-100vw) scale(0.8); opacity: 0.8; }
+  10% { transform: translateX(10vw) scale(1); opacity: 1; }
+  90% { transform: translateX(90vw) scale(1.2); opacity: 1; }
+  100% { transform: translateX(120vw) scale(1.5); opacity: 0; }
+}
+
+.dust-cloud {
+  position: absolute;
+  bottom: 15vh;
+  left: 0;
+  width: 150px;
+  height: 80px;
+  background-image: url('https://hayola.hornspeed.com/img/dust-cloud.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: dust-cloud-zip 1.5s ease-in-out forwards;
+}
+
 /* --- Theme: Pat & Mat --- */
 .theme-pat-mat h1, .theme-pat-mat h2, .theme-pat-mat .quick-title, .theme-pat-mat .menu-title, .theme-pat-mat .btn {
   font-family: 'Special Elite', 'Lalezar', cursive;
