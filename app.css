@@ -54,9 +54,9 @@ body.theme-transition .app-root {
 }
 
 /* containers */
-.app-root{max-width:1080px;margin:0 auto;padding:12px}
+.app-root{max-width:1080px;margin:0 auto;padding:12px; padding-top: 100px;}
 @media (min-width: 600px) {
-  .app-root{padding: 14px;}
+  .app-root{padding: 14px; padding-top: 160px;}
 }
 .section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px 14px;backdrop-filter:blur(6px);box-shadow:0 10px 40px -20px rgba(0,0,0,.5)}
 .section + .section{margin-top:14px}
