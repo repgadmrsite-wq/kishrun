@@ -1192,10 +1192,10 @@
       const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
       c.innerHTML = `
         <section class="section">
-          <h2><span class="dot"></span> ${isPatMat ? '۵) تهیه قطعات یدکی' : '۵) افزودنی‌های پولی و نوشیدنی'}</h2>
-          <div class="grid" style="display:grid;gap:12px;grid-template-columns:${(it.customizable && it.extra.unitPrice>0)?'repeat(2,minmax(0,1fr))':'repeat(1,minmax(0,1fr))'}">
-            ${(it.customizable && it.extra.unitPrice>0)?`
-            <div class="slider-wrap">
+          <h2><span class="dot"></span> ${isPatMat ? '۵) تهیه قطعات یدکی' : '۵) افزودنی‌ها'}</h2>
+
+          ${(it.customizable && it.extra.unitPrice>0)?`
+            <div class="slider-wrap" style="margin-bottom: 20px;">
               <div style="font-weight:700;margin-bottom:6px">کالباس اضافه</div>
               <input type="range" min="0" max="200" step="${it.extra.step}" value="${state.extraGrams}" id="extraRange"/>
               <div class="range-meta"><span>افزایش: ${state.extraGrams} گرم</span><span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span></div>
@@ -1203,11 +1203,11 @@
                 ${renderExtraViz(it)}
               </div>
             </div>`:''}
-            <div>
-              <div style="font-weight:700;margin-bottom:6px">افزودنی‌های پولی</div>
-              <div class="drinks">
-                <div class="drink">
-                  <div style="display:flex;align-items:center;gap:10px">
+
+            <div style="font-weight:700;margin-bottom:6px">افزودنی‌های پولی</div>
+            <div class="drinks">
+              <div class="drink">
+                <div style="display:flex;align-items:center;gap:10px">
                     <img src="img/addon-gouda-slice.webp" alt="پنیر گودا"/>
                     <div>
                       <div class="name">پنیر گودا ورقه‌ای</div>
