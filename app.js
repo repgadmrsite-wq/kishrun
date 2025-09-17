@@ -193,8 +193,8 @@
       extra:{step:50, unitPrice:0}, customizable:false,
       theme: {
         className: 'theme-olivieh',
-        soundId: 'olvie_sound',
-        entrySoundId: 'olvie_sound',
+        soundId: 'olvie-sound',
+        entrySoundId: 'olvie-sound',
         charImage: 'https://hayola.hornspeed.com/img/olvie.webp',
         entryEffect: 'olivieh-ingredients',
         bgGradient: 'linear-gradient(to bottom, #fefae0, #e9edc9)',
@@ -386,6 +386,7 @@
       'angry-welcome-sound', 'angry-launch-sound',
       'panda-sound',
       'oscar-sound',
+      'olvie-sound',
       'ginjer-welcome',
       'big-sound',
       'sal-sound',
