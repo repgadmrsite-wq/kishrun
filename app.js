@@ -9,7 +9,7 @@
 
   const MENU = [
     // Specials
-    { id:"shaun-lamb", name:"بره ناقلا", emoji:"🐑", img:"img/shaun-lamb-fillet.webp",
+    { id:"shaun-lamb", name:"بره ناقلا", emoji:"🐑", img:"img/shaun-lamb-fillet.webp", description: "سینه/فیله بره – خاص", tags: ["💎 پرمیوم", "✨ خاص", "🧑‍🍳 امضای‌شِف"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:170000},{id:"250",label:"۲۵۰ گرم",price:260000},{id:"350",label:"۳۵۰ گرم",price:320000}],
       extra:{step:50, unitPrice:30000}, customizable:true, isSpecial: true,
       theme: {
@@ -24,7 +24,7 @@
         glowTheme: '#FFD700'
       }
     },
-    { id:"hulk-dry", name:"هالک", emoji:"💪", img:"img/hulk-dry-sausage-600.webp",
+    { id:"hulk-dry", name:"هالک", emoji:"💪", img:"img/hulk-dry-sausage-600.webp", description: "حجیم", tags: ["💥 حجیم", "🥊 سنگین", "🍖 پروتئین‌بمب"],
       sizes:[{id:"600",label:"حجیم",price:195000}],
       extra:{step:0, unitPrice:0}, customizable:false, isSpecial: true,
       theme: {
@@ -39,7 +39,7 @@
         charImage: 'img/hulk.webp'
       }
     },
-    { id:"sullivan-mix", name:"سالیوان", emoji:"👹", img:"img/sully-mix-pepperoni.webp",
+    { id:"sullivan-mix", name:"سالیوان", emoji:"👹", img:"img/sully-mix-pepperoni.webp", description: "مرغ و گوشت ۹۰٪ + ۵۰ گرم پپرونی", tags: ["🧑‍🍳 امضای‌شِف", "✨ خاص", "💛 محبوب"],
       sizes:[{id:"250",label:"۲۵۰ گرم",price:180000},{id:"350",label:"۳۵۰ گرم",price:210000}],
       extra:{step:50, unitPrice:25000}, customizable:true, isSpecial: true,
       theme: {
@@ -55,7 +55,7 @@
       }
     },
     // Regular Menu
-    { id:"bigfoot-beef", name:"بیگ فوت", emoji:"🦶", img:"img/bigfoot-beef90.webp",
+    { id:"bigfoot-beef", name:"بیگ فوت", emoji:"🦶", img:"img/bigfoot-beef90.webp", description: "گوشت ۹۰٪", tags: ["🍖 پروتئین‌بمب", "😋 سیرکن", "⭐️ پرفروش"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:105000},{id:"250",label:"۲۵۰ گرم",price:165000},{id:"350",label:"۳۵۰ گرم",price:195000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -70,7 +70,7 @@
         glowTheme: '#5aff15'
       }
     },
-    { id:"ginger-chicken", name:"جینجر", emoji:"🐓", img:"img/ginger-chicken-ham.webp",
+    { id:"ginger-chicken", name:"جینجر", emoji:"🐓", img:"img/ginger-chicken-ham.webp", description: "ژامبون مرغ", tags: ["🌱 سبک", "💸 به‌صرفه", "🏃 سریع‌خور"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:95000},{id:"250",label:"۲۵۰ گرم",price:145000},{id:"350",label:"۳۵۰ گرم",price:170000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -85,7 +85,7 @@
         glowTheme: '#d9534f'
       }
     },
-    { id:"mario-mushroom", name:"ماریو", emoji:"🍄", img:"img/mario-chicken-mushroom.webp",
+    { id:"mario-mushroom", name:"ماریو", emoji:"🍄", img:"img/mario-chicken-mushroom.webp", description: "مرغ و قارچ", tags: ["🍄 قارچی", "💛 محبوب", "💦 آبدار / 🧈 کرمی"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:95000},{id:"250",label:"۲۵۰ گرم",price:140000},{id:"350",label:"۳۵۰ گرم",price:165000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -100,7 +100,7 @@
         charImage: 'img/mario.webp'
       }
     },
-    { id:"dragon-pepperoni", name:"دراگون", emoji:"🐉", img:"img/dragon-pepperoni.webp",
+    { id:"dragon-pepperoni", name:"دراگون", emoji:"🐉", img:"img/dragon-pepperoni.webp", description: "پپرونی", tags: ["🔥 آتیشی", "🌶 تندخو", "⭐️ پرفروش"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:90000},{id:"250",label:"۲۵۰ گرم",price:135000},{id:"350",label:"۳۵۰ گرم",price:160000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -114,7 +114,7 @@
         charImage: 'img/dragon.webp'
       }
     },
-    { id:"oscar-mortadella", name:"اسکار", emoji:"🏆", img:"img/oscar-mortadella60.webp",
+    { id:"oscar-mortadella", name:"اسکار", emoji:"🏆", img:"img/oscar-mortadella60.webp", description: "مارتادلا اقتصادی", tags: ["🧮 اقتصادی", "💸 به‌صرفه", "🌱 سبک"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:75000},{id:"250",label:"۲۵۰ گرم",price:110000},{id:"350",label:"۳۵۰ گرم",price:130000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -129,7 +129,7 @@
         glowTheme: '#f9d423'   // Sand Gold
       }
     },
-    { id:"panda-zhigo", name:"پاندا کونگ فو کار", emoji:"🐼", img:"img/panda-zhigu-beef90.webp",
+    { id:"panda-zhigo", name:"پاندا کونگ فو کار", emoji:"🐼", img:"img/panda-zhigu-beef90.webp", description: "گوشت مخصوص ۹۰٪", tags: ["✨ خاص", "⭐️ پرفروش", "🥊 سنگین"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:110000},{id:"250",label:"۲۵۰ گرم",price:170000},{id:"350",label:"۳۵۰ گرم",price:200000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -144,7 +144,7 @@
         glowTheme: '#fde047'
       }
     },
-    { id:"migmig-turkey", name:"میگ میگ", emoji:"💨", img:"https://hayola.hornspeed.com/img/mig-mig.webp",
+    { id:"migmig-turkey", name:"میگ میگ", emoji:"💨", img:"https://hayola.hornspeed.com/img/mig-mig.webp", description: "کالباس بوقلمون", tags: ["😋 خوشمزه"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:120000},{id:"250",label:"۲۵۰ گرم",price:200000},{id:"350",label:"۳۵۰ گرم",price:240000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -159,7 +159,7 @@
         glowTheme: '#00b4d8'
       }
     },
-    { id:"angry-birds-mix", name:"انگری بردز", emoji:"🐦", img:"img/angrybirds-mix.webp",
+    { id:"angry-birds-mix", name:"انگری بردز", emoji:"🐦", img:"img/angrybirds-mix.webp", description: "پپرونی، مارتا، قارچ و مرغ", tags: ["⭐️ پرفروش", "🍄 قارچی", "🌶 تندخو"],
       sizes:[{id:"300",label:"۳۰۰ گرم",price:165000},{id:"400",label:"۴۰۰ گرم",price:195000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -174,7 +174,7 @@
         glowTheme: '#de3434'
       }
     },
-    { id:"patmat-mix", name:"پت و مت", emoji:"🧑‍🤝‍🧑", img:"img/patmat-chicken-beef90.webp",
+    { id:"patmat-mix", name:"پت و مت", emoji:"🧑‍🤝‍🧑", img:"img/patmat-chicken-beef90.webp", description: "مرغ و گوشت ۹۰٪", tags: ["✨ ترکیبی", "😋 سیرکن", "🍖 پروتئین‌بمب"],
       sizes:[{id:"250",label:"۲۵۰ گرم",price:165000},{id:"350",label:"۳۵۰ گرم",price:195000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -189,7 +189,7 @@
         glowTheme: '#3B82F6'      // Blue
       }
     },
-    { id:"tweety-smoked", name:"تویی تی", emoji:"🐤", img:"img/tweety-smoked-chicken.webp",
+    { id:"tweety-smoked", name:"تویی تی", emoji:"🐤", img:"img/tweety-smoked-chicken.webp", description: "سینه مرغ چیکوتا اسموکی", tags: ["🥓 دودی", "✨ خاص", "💦 آبدار"],
       sizes:[{id:"250",label:"۲۵۰ گرم",price:220000},{id:"350",label:"۳۵۰ گرم",price:260000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -204,7 +204,7 @@
         glowTheme: '#FFD700'
       }
     },
-    { id:"olivieh", name:"سالاد الویه", emoji:"🥗", img:"img/olivieh-sandwich.webp",
+    { id:"olivieh", name:"سالاد الویه", emoji:"🥗", img:"img/olivieh-sandwich.webp", description: "تازه و خوشمزه", tags: ["💸 به‌صرفه"],
       sizes:[{id:"mini",label:"مینی",price:30000},{id:"single",label:"یک‌نفره",price:60000}],
       extra:{step:50, unitPrice:0}, customizable:false,
       theme: {
@@ -1035,8 +1035,12 @@
               const t = MENU.find(m=>m.id===id);
               return `<div class="quick-card" data-id="${t.id}">
                 <img src="${t.img||''}" alt=""/>
+                <div class="tags-container">
+                    ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                </div>
                 <div>
                   <div class="quick-title">${t.emoji || ''} ${t.name}</div>
+                  <div class="menu-description">${t.description || ''}</div>
                   <div class="quick-sub">
                     ${state.isHappy
                       ? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`
@@ -1053,8 +1057,12 @@
             ${MENU.map(m=>`
               <div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}">
                 <img src="${m.img||''}" alt=""/>
+                <div class="tags-container">
+                    ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                </div>
                 <div>
                   <div class="menu-title">${m.emoji || ''} ${m.name}</div>
+                  <div class="menu-description">${m.description || ''}</div>
                   <div class="menu-sub">
                     ${state.isHappy
                       ? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`
