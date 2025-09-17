@@ -1034,9 +1034,11 @@
             ${TOP.map(id=>{
               const t = MENU.find(m=>m.id===id);
               return `<div class="quick-card" data-id="${t.id}">
-                <img src="${t.img||''}" alt=""/>
-                <div class="tags-container">
-                    ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                <div class="card-image-wrapper">
+                    <img src="${t.img||''}" alt=""/>
+                    <div class="tags-container">
+                        ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                    </div>
                 </div>
                 <div>
                   <div class="quick-title">${t.emoji || ''} ${t.name}</div>
@@ -1056,9 +1058,11 @@
           <div class="menu-grid">
             ${MENU.map(m=>`
               <div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}">
-                <img src="${m.img||''}" alt=""/>
-                <div class="tags-container">
-                    ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                <div class="card-image-wrapper">
+                    <img src="${m.img||''}" alt=""/>
+                    <div class="tags-container">
+                        ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                    </div>
                 </div>
                 <div>
                   <div class="menu-title">${m.emoji || ''} ${m.name}</div>
