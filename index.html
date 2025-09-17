@@ -1,95 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منو هیولا - ساندویچ سرد</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>هیولا | ساخت آنلاین ساندویچ سرد</title>
+  <meta name="theme-color" content="#0ee3a8">
+  <link rel="manifest" href="assets/manifest.webmanifest">
+  <link rel="stylesheet" href="assets/app.css">
+  <link rel="icon" type="image/webp" href="img/logo-sullivan.webp">
+  <link rel="preload" href="https://hayola.hornspeed.com/img/naghola.webp" as="image">
+  <link rel="preload" href="http://hayola.hornspeed.com/img/tweety.webp" as="image">
 </head>
 <body>
-    <div id="snow-container"></div>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0iIzgwZGVlYSIvPjxjaXJjbGUgY3g9IjM1IiBjeT0iNDAiIHI9IjgiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iNjUiIGN5PSI0MCIgcj0iOCIgZmlsbD0id2hpdGUiLz48Y2lyY2xlIGN4PSIzNyIgY3k9IjQyIiByPSIzIiBmaWxsPSJibGFjayIvPjxjaXJjbGUgY3g9IjY3IiBjeT0iNDIiIHI9IjMiIGZpbGw9ImJsYWNrIi8+PHBhdGggZD0iTSAzMCA2NSBRIDUwIDgwIDcwIDY1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9InRyYW5zcGFyZW50Ii8+PC9zdmc+" alt="هیولای آبی">
-            </div>
-            <p class="tagline">ساندویچ سرد خودت رو بساز!</p>
-        </header>
+  <div id="theme-bg-effects"></div>
+  <div id="theme-char-image"></div>
+  <div id="theme-fg-effects"></div>
+  <div id="app" class="app-root"></div>
 
-        <main id="sandwich-builder">
-            <!-- Sections for bread, sausage, ham -->
-            <section class="menu-section">
-                <h2>۱. نان را انتخاب کنید</h2>
-                <div class="options-container" id="bread-options">
-                    <div class="option-card" data-price="10000" data-name="باگت"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>باگت</h3></div>
-                    <div class="option-card" data-price="12000" data-name="چاودار"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>چاودار</h3></div>
-                    <div class="option-card" data-price="15000" data-name="سبوس‌دار"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>سبوس‌دار</h3></div>
-                </div>
-            </section>
-            <section class="menu-section">
-                <h2>۲. سوسیس را انتخاب کنید (اختیاری)</h2>
-                <div class="options-container" id="sausage-options">
-                    <div class="option-card" data-price="0" data-name="هیچکدام"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>هیچکدام</h3></div>
-                    <div class="option-card" data-price="25000" data-name="کوکتل"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>کوکتل</h3></div>
-                    <div class="option-card" data-price="30000" data-name="کراکف"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>کراکف</h3></div>
-                    <div class="option-card" data-price="35000" data-name="هات‌داگ"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>هات‌داگ</h3></div>
-                </div>
-            </section>
-            <section class="menu-section">
-                <h2>۳. کالباس را انتخاب کنید (اختیاری)</h2>
-                <div class="options-container" id="ham-options">
-                     <div class="option-card" data-price="0" data-name="هیچکدام"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>هیچکدام</h3></div>
-                     <div class="option-card" data-price="20000" data-name="مرغ"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>مرغ</h3></div>
-                     <div class="option-card" data-price="28000" data-name="گوشت"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>گوشت</h3></div>
-                     <div class="option-card" data-price="22000" data-name="پپرونی"><img class="card-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iI2EyYjRjNiIgZD0iTTQsMjAgSDI4IEwyNCwyNiBIOCBaIi8+PHBhdGggZmlsbD0iIzgwZGVlYSIgZD0iTTQsMjAgQzYsMTYgMTAsMTYgMTIsMjAgQzE0LDE2IDE4LDE2IDIwLDIwIEMyMiwxNiAyNiwxNiAyOCwyMCBaIi8+PHBhdGggZmlsbD0iI2YxZmFlZSIgZD0iTTYsMTggSDI2IFYyMSBINloiLz48cGF0aCBmaWxsPSIjYTJiNGM2IiBkPSJNNCwxOCBIMjggTDI2LDEyIEg2IFoiLz48L3N2Zz4=" alt="ساندویچ"><h3>پپرونی</h3></div>
-                </div>
-            </section>
-        </main>
+  <!-- Audio feedback -->
+  <audio id="ding" preload="auto">
+    <source src="assets/sounds/ding.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="success" preload="auto">
+    <source src="assets/sounds/success.mp3" type="audio/mpeg">
+  </audio>
+  <!-- NOTE: Please provide the sound file for the dragon theme -->
+  <audio id="dragon-sound" preload="auto">
+    <source src="assets/sounds/fire-whoosh.mp3" type="audio/mpeg">
+  </audio>
+  <!-- NOTE: Please provide the sound file for the mario theme -->
+  <audio id="mario-sound" preload="auto">
+    <source src="assets/sounds/coin.mp3" type="audio/mpeg">
+  </audio>
+  <!-- NOTE: Please provide the sound file for the mario jump effect -->
+  <audio id="mario-jump-sound" preload="auto">
+    <source src="assets/sounds/mario-jump.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="special-sound" preload="auto">
+    <source src="assets/sounds/special.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="hulk-sound" preload="auto">
+    <source src="assets/sounds/hulk.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="hulk-smash-sound" preload="auto">
+    <source src="assets/sounds/smash-hulk.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="naghola-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/naghola.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="naghola-welcome-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/naghola-welcome.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="tweety-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/tweety-sound.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="tweety-welcome-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/tweety-welcome.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="pat-mat-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/pat-mat.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="angry-welcome-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/angry-welcome.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="angry-launch-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/angry-sound.wav" type="audio/wav">
+  </audio>
+  <audio id="panda-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/panda.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="oscar-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/Oscar-sound.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="ginjer-welcome" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/ginjer-welcome.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="big-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/big.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="sal-sound" preload="auto">
+    <source src="https://hayola.hornspeed.com/assets/sounds/sal.mp3" type="audio/mpeg">
+  </audio>
+   <audio id="ding" preload="auto">
+    <source src="assets/sounds/ding.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="success" preload="auto">
+    <source src="assets/sounds/success.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="olvie_sound" preload="auto">
+    <source src="assets/sounds/olvie.mp3" type="audio/mpeg">
+  </audio>
 
-        <footer>
-            <div class="total-price">
-                <h2>قیمت نهایی: <span id="total-price">۰</span> تومان</h2>
-            </div>
-            <button id="order-btn" class="order-button">ثبت سفارش</button>
-        </footer>
-    </div>
-
-    <div id="order-summary-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modal-body">
-                <h2>خلاصه سفارش شما</h2>
-                <div id="modal-order-details"></div>
-                <hr>
-                <h2>اطلاعات ارسال</h2>
-                <form id="customer-form">
-                    <div class="form-group">
-                        <label for="sub-number">شماره اشتراک (اختیاری)</label>
-                        <input type="text" id="sub-number" name="sub-number" placeholder="اگر شماره اشتراک دارید وارد کنید">
-                    </div>
-                    <div class="form-group">
-                        <label for="customer-name">نام و نام خانوادگی</label>
-                        <input type="text" id="customer-name" name="customer-name" required placeholder="نام کامل خود را وارد کنید">
-                    </div>
-                    <div class="form-group">
-                        <label for="customer-phone">شماره تماس</label>
-                        <input type="tel" id="customer-phone" name="customer-phone" required placeholder="مثال: ۰۹۱۲۳۴۵۶۷۸۹">
-                    </div>
-                    <div class="form-group">
-                        <label for="customer-address">آدرس دقیق</label>
-                        <textarea id="customer-address" name="customer-address" rows="3" required placeholder="آدرس خود را برای ارسال وارد کنید"></textarea>
-                    </div>
-                    <button type="submit" class="zarinpal-button">پرداخت با زرین‌پال (شبیه‌سازی)</button>
-                </form>
-            </div>
-            <div id="modal-success-message" style="display: none; text-align: center;">
-                <h2>سفارش شما با موفقیت ثبت شد!</h2>
-                <p>از خرید شما متشکریم. به زودی برای هماهنگی با شما تماس می‌گیریم.</p>
-                <p>در حال انتقال به درگاه پرداخت... (شبیه‌سازی)</p>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="assets/app.js" defer></script>
 </body>
 </html>
