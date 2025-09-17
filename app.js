@@ -233,6 +233,14 @@
   const el = (sel, root=document)=> root.querySelector(sel);
   const els = (sel, root=document)=> Array.from(root.querySelectorAll(sel));
   const fmt = n => (n||0).toLocaleString("fa-IR") + " تومان";
+  const debounce = (func, delay) => {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
   const vibrate = ms => { try{ navigator.vibrate && navigator.vibrate(ms||12); }catch(e){} };
   const play = id => { try{ const a = el('#'+id); if(a){ a.currentTime=0; a.play(); } }catch(e){} };
 
@@ -402,6 +410,17 @@
   }
 
   function applyTheme(item) {
+    const themeCharImage = el("#theme-char-image");
+    if (themeCharImage) {
+        const allAnimationClasses = [
+            'visible', 'mario-entry', 'hulk-entry', 'naghola-entry', 'tweety-entry',
+            'tweety-swinging', 'pat-mat-entry', 'pat-mat-idle', 'panda-entry',
+            'oscar-peek', 'catapult-launch', 'animation-done', 'bigfoot-sighting',
+            'door-entrance'
+        ];
+        themeCharImage.classList.remove(...allAnimationClasses);
+    }
+
     stopAllThemeSounds(); // Stop all sounds before applying a new theme
 
     const body = document.body;
@@ -1008,22 +1027,22 @@
           </div>
         </section>
       `;
-      els(".quick-card", c).forEach(card=>card.addEventListener("click", e=>{
+      const handleThemeChange = debounce((card) => {
         state.selectedId = card.getAttribute("data-id");
-        state.sizeId = selectedItem().sizes[0].id;
-        resetCustomizations();
+        if (card.classList.contains('quick-card')) {
+            state.sizeId = selectedItem().sizes[0].id;
+            resetCustomizations();
+        }
         const item = selectedItem();
         applyTheme(item);
-        play('special-sound'); // Always play special sound for quick-cards
+        const soundToPlay = card.classList.contains('quick-card') ? 'special-sound' : (item.theme?.soundId || "ding");
+        play(soundToPlay);
         render();
-      }));
-      els(".menu-card", c).forEach(card=>card.addEventListener("click", e=>{
-        state.selectedId = card.getAttribute("data-id");
-        const item = selectedItem();
-        applyTheme(item);
-        play(item.theme?.soundId || "ding"); // Play theme sound or default for regular menu
-        render();
-      }));
+      }, 400);
+
+      els(".quick-card, .menu-card", c).forEach(card => {
+        card.addEventListener("click", () => handleThemeChange(card));
+      });
     }
 
     if(state.step===1){
@@ -1392,8 +1411,20 @@
     });
   }
 
+  function preloadImages() {
+    MENU.forEach(item => {
+      if (item.theme && item.theme.charImage) {
+        const img = new Image();
+        const src = item.theme.charImage;
+        // Handle cases where the path might be relative
+        img.src = src.startsWith('http') ? src : `https://hayola.hornspeed.com/${src}`;
+      }
+    });
+  }
+
   // initial render
   render();
+  preloadImages();
 
   // PWA: register SW
   if('serviceWorker' in navigator){
