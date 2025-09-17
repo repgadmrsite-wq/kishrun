@@ -29,6 +29,7 @@ h1, h2, .quick-title, .menu-title, .btn.primary {
   --muted:#94a3b8;
   --text:#e2e8f0;
   --danger:#ef4444;
+  --text-theme-color: var(--text);
 }
 
 *{box-sizing:border-box}
@@ -36,7 +37,7 @@ html,body{height:100%}
 body{
   margin:0;
   background: var(--bg-theme);
-  color:var(--text);
+  color:var(--text-theme-color);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Vazirmatn", "IRANSans", "Tahoma", "Arial", sans-serif;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -95,6 +96,11 @@ body.theme-transition .app-root {
 }
 
 @media (max-width: 600px) {
+  .sully-header {
+    width: 120px; /* Smaller fixed width */
+    top: 5px;
+    left: 5px;
+  }
   #theme-char-image img {
     max-width: 55%;
     transform: scale(0.8) translateX(30%);

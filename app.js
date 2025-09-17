@@ -126,7 +126,8 @@
         bgGradient: 'linear-gradient(to top, #f9d423 0%, #f4791f 100%)', // Sunset gradient
         primaryTheme: '#2193b0', // Oasis Blue
         accentTheme: '#6dd5ed', // Lighter Blue
-        glowTheme: '#f9d423'   // Sand Gold
+        glowTheme: '#f9d423',   // Sand Gold
+        textColor: '#3a2e39'
       }
     },
     { id:"panda-zhigo", name:"پاندا کونگ فو کار", emoji:"🐼", img:"img/panda-zhigu-beef90.webp", description: "گوشت مخصوص ۹۰٪", tags: ["✨ خاص", "⭐️ پرفروش", "🥊 سنگین"],
@@ -216,7 +217,8 @@
         bgGradient: 'linear-gradient(to bottom, #fefae0, #e9edc9)',
         primaryTheme: '#588157',
         accentTheme: '#a3b18a',
-        glowTheme: '#fefae0'
+        glowTheme: '#fefae0',
+        textColor: '#283618'
       }
     },
   ];
@@ -380,8 +382,8 @@
   const state = {
     step:0,
     isHappy:false, countdown:"", nextCountdown:"",
-    selectedId: MENU[0].id,
-    sizeId: MENU[0].sizes[0].id,
+    selectedId: null,
+    sizeId: null,
     freeLevels: Object.fromEntries(FREE.map(f=>[f.id,1])),
     sauceLevels: Object.fromEntries(SAUCES.map(s=>[s.id,1])),
     extraGrams: 0,
@@ -414,6 +416,7 @@
     primaryTheme: '#0ee3a8',
     accentTheme: '#6b8afd',
     glowTheme: '#a78bfa',
+    textColor: '#e2e8f0',
   };
 
   function stopAllThemeSounds() {
@@ -489,6 +492,7 @@
       body.style.setProperty('--primary-theme', theme.primaryTheme);
       body.style.setProperty('--accent-theme', theme.accentTheme);
       body.style.setProperty('--glow-theme', theme.glowTheme);
+      body.style.setProperty('--text-theme-color', theme.textColor);
 
       // Handle character image
       let charHtml = '';
@@ -999,19 +1003,25 @@
     const { total, cartTotal } = prices();
     const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
     const orderTotal = cartTotal + total + drinksPrice;
-    const nextDisabled = (state.step===0 && !state.selectedId) || (state.step===1 && !state.sizeId);
     b.innerHTML = `
       <button class="btn" ${state.step===0?'disabled':''} id="prevBtn">قبلی</button>
       <button class="btn" id="cartBtn">سبد (${state.cart.length})</button>
       <div class="total-badge">${state.isHappy?'<span class="muted">جمع سفارش (با تخفیف):</span>':'جمع سفارش:'} <b>${fmt(orderTotal)}</b></div>
-      <button class="btn ${state.step>=5?'secondary':'primary'}" id="nextBtn" ${nextDisabled?'disabled':''}>${state.step>=5?'پایان':'بعدی'}</button>
+      <button class="btn ${state.step>=5?'secondary':'primary'}" id="nextBtn">${state.step>=5?'پایان':'بعدی'}</button>
     `;
     el("#prevBtn") && el("#prevBtn").addEventListener("click", ()=>{
       let prev = state.step-1; if(state.step===4 && !selectedItem().customizable) prev=1; state.step = Math.max(0,prev); render();
     });
     el("#cartBtn").addEventListener("click", ()=> openCart());
     el("#nextBtn").addEventListener("click", ()=>{
-      if(nextDisabled) return;
+      if (state.step === 0 && !state.selectedId) {
+        alert('لطفا یک آیتم انتخاب کنید');
+        return;
+      }
+      if (state.step === 1 && !state.sizeId) {
+        alert('لطفا یک سایز انتخاب کنید');
+        return;
+      }
       let nxt = state.step+1;
       if(nxt===2 && !selectedItem().customizable) nxt = 4;
       state.step = Math.min(5, nxt);
@@ -1083,6 +1093,7 @@
       `;
       const handleThemeChange = debounce((card) => {
         state.selectedId = card.getAttribute("data-id");
+        state.sizeId = null; // Reset size selection
         if (card.classList.contains('quick-card')) {
             state.sizeId = selectedItem().sizes[0].id;
             resetCustomizations();
