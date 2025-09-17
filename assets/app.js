@@ -145,7 +145,7 @@
         glowTheme: '#fde047'
       }
     },
-    { id:"migmig-turkey", name:"میگ میگ", emoji:"💨", img:"https://hayola.hornspeed.com/img/mig-mig.webp", description: "کالباس بوقلمون", tags: ["😋 خوشمزه"],
+    { id:"migmig-turkey", name:"میگ میگ", emoji:"💨", img:"https://hayola.hornspeed.com/img/mig-items.webp", description: "کالباس بوقلمون", tags: ["😋 خوشمزه"],
       sizes:[{id:"150",label:"۱۵۰ گرم",price:120000},{id:"250",label:"۲۵۰ گرم",price:200000},{id:"350",label:"۳۵۰ گرم",price:240000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
@@ -245,7 +245,7 @@
     { id:"special", label:"سس ویژه" },
   ];
   const LEVELS = [
-    { id:-1, label:"نریزید" }, { id:0, label:"کم" }, { id:1, label:"عادی" }, { id:2, label:"زیاد" },
+    { id:-1, label:"نریزید" }, { id:0, label:"کم" }, { id:1, label:"عادی" }, { id:2, label:"زیاد" }, { id:3, label:"خیلی زیاد" },
   ];
 
   const el = (sel, root=document)=> root.querySelector(sel);
@@ -881,11 +881,10 @@
     const count = Math.floor(state.extraGrams / it.extra.step);
     const imageUrl = 'https://hayola.hornspeed.com/img/extera-kalbas.webp';
 
-    // Create a stacked visualization
     return `
       <div class="extra-viz-container">
-        ${[...Array(count)].map((_, i) =>
-          `<img src="${imageUrl}" class="extra-item-img" alt="کالباس اضافه" style="z-index: ${i}; transform: translateX(${i * 10}px);"/>`
+        ${[...Array(count)].map(() =>
+          `<img src="${imageUrl}" class="extra-item-img" alt="کالباس اضافه"/>`
         ).join('')}
       </div>
     `;
@@ -1077,7 +1076,7 @@
                   <div class="menu-title">${m.emoji || ''} ${m.name}</div>
                   <div class="menu-description">${m.description || ''}</div>
                   <div class="tags-container">
-                        ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                        ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
                   </div>
                   <div class="menu-sub">
                     ${state.isHappy
@@ -1199,11 +1198,8 @@
             <div class="slider-wrap" style="margin-bottom: 20px;">
               <div style="font-weight:700;margin-bottom:6px">کالباس اضافه</div>
               <input type="range" min="0" max="200" step="${it.extra.step}" value="${state.extraGrams}" id="extraRange"/>
-              <div class="range-meta">
-                <span>افزایش: ${state.extraGrams} گرم (${Math.floor(state.extraGrams/it.extra.step)} ورق)</span>
-                <span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span>
-              </div>
-              <div id="extraViz" class="extra-viz-wrapper" style="margin-top:8px;">
+              <div class="range-meta"><span>افزایش: ${state.extraGrams} گرم</span><span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span></div>
+              <div id="extraViz" class="extra-viz" style="margin-top:8px; height: 10px;">
                 ${renderExtraViz(it)}
               </div>
             </div>`:''}
