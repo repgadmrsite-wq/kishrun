@@ -152,7 +152,7 @@
         className: 'theme-migmig',
         soundId: 'migmig-sound',
         entrySoundId: 'migmig-sound',
-        charImage: 'https://hayola.hornspeed.com/img/mig-items.webp',
+        charImage: 'https://hayola.hornspeed.com/img/mig-mig.webp',
         entryEffect: 'roadrunner-zip',
         bgGradient: 'linear-gradient(to top, #fca311, #e9c46a)',
         primaryTheme: '#00b4d8',
@@ -1261,7 +1261,7 @@
       extra && extra.addEventListener("input", e=>{
         state.extraGrams = Number(extra.value); vibrate(10);
         renderBottom(); // update price in badge
-        const viz = el("#extraViz");
+        const viz = el(".extra-viz-wrapper");
         if(viz) viz.innerHTML = renderExtraViz(selectedItem());
       });
       els("button[data-cheese]", c).forEach(b=>b.addEventListener("click", ()=>{
