@@ -4,12 +4,13 @@
   const BRAND = { name:"هیولا", tagline:"ساندویچ سرد", accent:"#6b8afd", primary:"#0ee3a8", glow:"#a78bfa", logo:"img/logo-sullivan.webp" };
   const DISCOUNT = { percent:0.10, startHour:18, endHour:20 };
   const ORDER_START = 500;
-  const CHEESE_PRICE = 15000;
+  const CHEESE_PRICE = 6000;
+  const SAUCE_PRICE = 3000;
 
   const MENU = [
     // Specials
     { id:"shaun-lamb", name:"بره ناقلا", emoji:"🐑", img:"img/shaun-lamb-fillet.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:250000},{id:"250",label:"۲۵۰ گرم",price:350000},{id:"350",label:"۳۵۰ گرم",price:450000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:170000},{id:"250",label:"۲۵۰ گرم",price:260000},{id:"350",label:"۳۵۰ گرم",price:320000}],
       extra:{step:50, unitPrice:30000}, customizable:true, isSpecial: true,
       theme: {
         className: 'theme-naghola',
@@ -24,7 +25,7 @@
       }
     },
     { id:"hulk-dry", name:"هالک", emoji:"💪", img:"img/hulk-dry-sausage-600.webp",
-      sizes:[{id:"600",label:"۶۰۰ گرم",price:500000}],
+      sizes:[{id:"600",label:"حجیم",price:195000}],
       extra:{step:0, unitPrice:0}, customizable:false, isSpecial: true,
       theme: {
         className: 'theme-hulk',
@@ -39,7 +40,7 @@
       }
     },
     { id:"sullivan-mix", name:"سالیوان", emoji:"👹", img:"img/sully-mix-pepperoni.webp",
-      sizes:[{id:"250",label:"۲۵۰ گرم",price:300000},{id:"350",label:"۳۵۰ گرم",price:400000}],
+      sizes:[{id:"250",label:"۲۵۰ گرم",price:180000},{id:"350",label:"۳۵۰ گرم",price:210000}],
       extra:{step:50, unitPrice:25000}, customizable:true, isSpecial: true,
       theme: {
         className: 'theme-monsters-inc',
@@ -55,7 +56,7 @@
     },
     // Regular Menu
     { id:"bigfoot-beef", name:"بیگ فوت", emoji:"🦶", img:"img/bigfoot-beef90.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:180000},{id:"250",label:"۲۵۰ گرم",price:270000},{id:"350",label:"۳۵۰ گرم",price:330000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:105000},{id:"250",label:"۲۵۰ گرم",price:165000},{id:"350",label:"۳۵۰ گرم",price:195000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-bigfoot',
@@ -70,7 +71,7 @@
       }
     },
     { id:"ginger-chicken", name:"جینجر", emoji:"🐓", img:"img/ginger-chicken-ham.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:160000},{id:"250",label:"۲۵۰ گرم",price:250000},{id:"350",label:"۳۵۰ گرم",price:310000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:95000},{id:"250",label:"۲۵۰ گرم",price:145000},{id:"350",label:"۳۵۰ گرم",price:170000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-chicken-run',
@@ -85,7 +86,7 @@
       }
     },
     { id:"mario-mushroom", name:"ماریو", emoji:"🍄", img:"img/mario-chicken-mushroom.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:170000},{id:"250",label:"۲۵۰ گرم",price:260000},{id:"350",label:"۳۵۰ گرم",price:320000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:95000},{id:"250",label:"۲۵۰ گرم",price:140000},{id:"350",label:"۳۵۰ گرم",price:165000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-mario',
@@ -100,7 +101,7 @@
       }
     },
     { id:"dragon-pepperoni", name:"دراگون", emoji:"🐉", img:"img/dragon-pepperoni.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:175000},{id:"250",label:"۲۵۰ گرم",price:265000},{id:"350",label:"۳۵۰ گرم",price:325000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:90000},{id:"250",label:"۲۵۰ گرم",price:135000},{id:"350",label:"۳۵۰ گرم",price:160000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-dragon',
@@ -114,7 +115,7 @@
       }
     },
     { id:"oscar-mortadella", name:"اسکار", emoji:"🏆", img:"img/oscar-mortadella60.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:150000},{id:"250",label:"۲۵۰ گرم",price:240000},{id:"350",label:"۳۵۰ گرم",price:300000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:75000},{id:"250",label:"۲۵۰ گرم",price:110000},{id:"350",label:"۳۵۰ گرم",price:130000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-oscar',
@@ -129,7 +130,7 @@
       }
     },
     { id:"panda-zhigo", name:"پاندا کونگ فو کار", emoji:"🐼", img:"img/panda-zhigu-beef90.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:180000},{id:"250",label:"۲۵۰ گرم",price:270000},{id:"350",label:"۳۵۰ گرم",price:330000}],
+      sizes:[{id:"150",label:"۱۵۰ گرم",price:110000},{id:"250",label:"۲۵۰ گرم",price:170000},{id:"350",label:"۳۵۰ گرم",price:200000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-kungfu-panda',
@@ -159,7 +160,7 @@
       }
     },
     { id:"angry-birds-mix", name:"انگری بردز", emoji:"🐦", img:"img/angrybirds-mix.webp",
-      sizes:[{id:"300",label:"۳۰۰ گرم",price:320000},{id:"400",label:"۴۰۰ گرم",price:420000}],
+      sizes:[{id:"300",label:"۳۰۰ گرم",price:165000},{id:"400",label:"۴۰۰ گرم",price:195000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-angry-birds',
@@ -174,7 +175,7 @@
       }
     },
     { id:"patmat-mix", name:"پت و مت", emoji:"🧑‍🤝‍🧑", img:"img/patmat-chicken-beef90.webp",
-      sizes:[{id:"250",label:"۲۵۰ گرم",price:280000},{id:"350",label:"۳۵۰ گرم",price:380000}],
+      sizes:[{id:"250",label:"۲۵۰ گرم",price:165000},{id:"350",label:"۳۵۰ گرم",price:195000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-pat-mat',
@@ -189,7 +190,7 @@
       }
     },
     { id:"tweety-smoked", name:"تویی تی", emoji:"🐤", img:"img/tweety-smoked-chicken.webp",
-      sizes:[{id:"250",label:"۲۵۰ گرم",price:260000},{id:"350",label:"۳۵۰ گرم",price:340000}],
+      sizes:[{id:"250",label:"۲۵۰ گرم",price:220000},{id:"350",label:"۳۵۰ گرم",price:260000}],
       extra:{step:50, unitPrice:20000}, customizable:true,
       theme: {
         className: 'theme-tweety',
@@ -204,7 +205,7 @@
       }
     },
     { id:"olivieh", name:"سالاد الویه", emoji:"🥗", img:"img/olivieh-sandwich.webp",
-      sizes:[{id:"150",label:"۱۵۰ گرم",price:100000},{id:"250",label:"۲۵۰ گرم",price:140000}],
+      sizes:[{id:"mini",label:"مینی",price:30000},{id:"single",label:"یک‌نفره",price:60000}],
       extra:{step:50, unitPrice:0}, customizable:false,
       theme: {
         className: 'theme-olivieh',
@@ -221,12 +222,12 @@
   ];
 
   const DRINKS = [
-    { id:"water", name:"آب کوچک", price:15000, img:"img/drink-water-small.webp" },
-    { id:"doogh", name:"دوغ تک نفره", price:20000, img:"img/drink-doogh-single.webp" },
-    { id:"lemonade", name:"لیموناد شیشه", price:30000, img:"img/drink-lemonade-bottle.webp" },
-    { id:"malt", name:"ماالشعیر", price:30000, img:"img/drink-malt-can.webp" },
-    { id:"soda-pet", name:"نوشابه پت", price:25000, img:"img/drink-soda-pet.webp" },
-    { id:"soda-family", name:"نوشابه خانواده", price:55000, img:"img/drink-soda-family-1_5L.webp" },
+    { id:"water", name:"آب کوچک", price:9000, img:"img/drink-water-small.webp" },
+    { id:"doogh", name:"دوغ تک نفره", price:26000, img:"img/drink-doogh-single.webp" },
+    { id:"lemonade", name:"لیموناد شیشه", price:38000, img:"img/drink-lemonade-bottle.webp" },
+    { id:"malt", name:"ماالشعیر", price:45000, img:"img/drink-malt-can.webp" },
+    { id:"soda-pet", name:"نوشابه پت", price:24000, img:"img/drink-soda-pet.webp" },
+    { id:"soda-family", name:"نوشابه خانواده", price:57000, img:"img/drink-soda-family-1_5L.webp" },
   ];
 
   const FREE = [
@@ -385,6 +386,7 @@
     sauceLevels: Object.fromEntries(SAUCES.map(s=>[s.id,1])),
     extraGrams: 0,
     cheeseSlices: 0,
+    takeawaySauces: 0,
     drinks: Object.fromEntries(DRINKS.map(d=>[d.id,0])),
     cart: [],
     orderSeq: ORDER_START-1,
@@ -829,6 +831,7 @@
   function resetCustomizations(){
     state.extraGrams = 0;
     state.cheeseSlices = 0;
+    state.takeawaySauces = 0;
     state.freeLevels = Object.fromEntries(FREE.map(f=>[f.id,1]));
     state.sauceLevels = Object.fromEntries(SAUCES.map(s=>[s.id,1]));
   }
@@ -859,13 +862,14 @@
     const extraSteps = it.extra.unitPrice>0 ? Math.floor(state.extraGrams / it.extra.step) : 0;
     const extraPrice = extraSteps * it.extra.unitPrice;
     const cheesePrice = (state.cheeseSlices || 0) * CHEESE_PRICE;
+    const saucePrice = (state.takeawaySauces || 0) * SAUCE_PRICE;
     const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{
       const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0);
     }, 0);
-    const subtotal = base + extraPrice + cheesePrice + drinksPrice;
+    const subtotal = base + extraPrice + cheesePrice + drinksPrice + saucePrice;
     const total = state.isHappy ? Math.round(subtotal * (1 - DISCOUNT.percent)) : subtotal;
     const cartTotal = state.cart.reduce((s,i)=>s+(i.total||0),0);
-    return { base, extraSteps, extraPrice, cheesePrice, drinksPrice, subtotal, total, cartTotal };
+    return { base, extraSteps, extraPrice, cheesePrice, saucePrice, drinksPrice, subtotal, total, cartTotal };
   }
 
   function renderExtraViz(it) {
@@ -941,6 +945,7 @@
       extraGrams: state.extraGrams,
       extraPrice,
       cheeseSlices: state.cheeseSlices,
+      takeawaySauces: state.takeawaySauces,
       drinks: {...state.drinks},
       drinksPrice,
       freeLevels:{...state.freeLevels},
@@ -1191,6 +1196,20 @@
                     <button data-cheese="1">+</button>
                   </div>
                 </div>
+                <div class="drink">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <img src="https://hayola.hornspeed.com/img/addon-sauce.webp" alt="سس تک نفره"/>
+                    <div>
+                      <div class="name">سس تک نفره بیرون بر</div>
+                      <div style="font-size:12px;color:#cbd5e1">${fmt(SAUCE_PRICE)} / عدد</div>
+                    </div>
+                  </div>
+                  <div class="qty">
+                    <button data-sauce-takeaway="-1">−</button>
+                    <div class="n">${state.takeawaySauces||0}</div>
+                    <button data-sauce-takeaway="1">+</button>
+                  </div>
+                </div>
                 <div class="divider" style="margin: 12px 0;"></div>
                 ${DRINKS.map(d=>`
                   <div class="drink">
@@ -1224,6 +1243,11 @@
       els("button[data-cheese]", c).forEach(b=>b.addEventListener("click", ()=>{
         const d=Number(b.getAttribute("data-cheese"));
         state.cheeseSlices = Math.max(0, (state.cheeseSlices||0) + d);
+        play("ding"); render();
+      }));
+      els("button[data-sauce-takeaway]", c).forEach(b=>b.addEventListener("click", ()=>{
+        const d=Number(b.getAttribute("data-sauce-takeaway"));
+        state.takeawaySauces = Math.max(0, (state.takeawaySauces||0) + d);
         play("ding"); render();
       }));
       els("button[data-drink]", c).forEach(b=>b.addEventListener("click", ()=>{
