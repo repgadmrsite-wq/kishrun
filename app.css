@@ -988,40 +988,23 @@ body.theme-transition .app-root {
 .menu-sub{font-size:13px;color:var(--muted)}
 
 /* Tags */
-.card-image-wrapper {
-    position: relative;
-}
-.quick-card .card-image-wrapper {
-    align-self: center; /* Center the image wrapper in quick cards */
-}
-
 .tags-container {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    justify-content: center;
-    pointer-events: none; /* Allow clicks to pass through to the card */
+    justify-content: flex-start;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    min-height: 24px; /* Prevent layout jump */
 }
 .tag-label {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-    transition: all 0.2s ease-in-out;
-}
-.menu-card:hover .tag-label, .quick-card:hover .tag-label {
-    background: rgba(0, 0, 0, 0.6);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    background-color: var(--accent-theme);
+    color: var(--bg);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 @media (max-width: 560px) {

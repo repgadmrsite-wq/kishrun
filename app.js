@@ -1036,13 +1036,13 @@
               return `<div class="quick-card" data-id="${t.id}">
                 <div class="card-image-wrapper">
                     <img src="${t.img||''}" alt=""/>
-                    <div class="tags-container">
-                        ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
-                    </div>
                 </div>
                 <div>
                   <div class="quick-title">${t.emoji || ''} ${t.name}</div>
                   <div class="menu-description">${t.description || ''}</div>
+                  <div class="tags-container">
+                        ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                  </div>
                   <div class="quick-sub">
                     ${state.isHappy
                       ? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`
@@ -1060,13 +1060,13 @@
               <div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}">
                 <div class="card-image-wrapper">
                     <img src="${m.img||''}" alt=""/>
-                    <div class="tags-container">
-                        ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
-                    </div>
                 </div>
                 <div>
                   <div class="menu-title">${m.emoji || ''} ${m.name}</div>
                   <div class="menu-description">${m.description || ''}</div>
+                  <div class="tags-container">
+                        ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
+                  </div>
                   <div class="menu-sub">
                     ${state.isHappy
                       ? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`
