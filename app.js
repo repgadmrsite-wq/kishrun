@@ -875,11 +875,12 @@
   function renderExtraViz(it) {
     if (!it || !it.extra || it.extra.unitPrice <= 0) return '';
     const count = Math.floor(state.extraGrams / it.extra.step);
-    // Use divs to force new lines
+    const imageUrl = 'https://hayola.hornspeed.com/img/extera-kalbas.webp';
+
     return `
-      <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
-        ${[...Array(count)].map((_, i) =>
-          `<div style="width: ${20 * (i+1)}%; height: 8px; background: #E97451; border-radius: 4px;"></div>`
+      <div class="extra-viz-container">
+        ${[...Array(count)].map(() =>
+          `<img src="${imageUrl}" class="extra-item-img" alt="کالباس اضافه"/>`
         ).join('')}
       </div>
     `;

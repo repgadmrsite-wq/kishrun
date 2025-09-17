@@ -1016,6 +1016,13 @@ body.theme-transition .app-root {
         font-size: 9px;
         padding: 2px 6px;
     }
+    .extra-viz-container {
+        gap: 4px;
+    }
+    .extra-item-img {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 
@@ -1053,6 +1060,22 @@ body.theme-transition .app-root {
 
 /* slider */
 .slider-wrap{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);border-radius:16px;padding:12px}
+.extra-viz-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+    min-height: 54px; /* Reserve space for one row */
+}
+.extra-item-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 input[type=range]{
   -webkit-appearance: none;
   appearance: none;
