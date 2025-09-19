@@ -971,6 +971,29 @@
     };
   }
 
+  function createCartItem(item) {
+    if (!item) return null;
+    const defaultSize = item.sizes[0];
+    const basePrice = defaultSize.price;
+    const total = state.isHappy ? Math.round(basePrice * (1 - DISCOUNT.percent)) : basePrice;
+
+    return {
+        id: Date.now() + Math.random(),
+        name: item.name,
+        sizeLabel: defaultSize.label,
+        basePrice: basePrice,
+        extraGrams: 0,
+        extraPrice: 0,
+        cheeseSlices: 0,
+        takeawaySauces: 0,
+        drinks: Object.fromEntries(DRINKS.map(d => [d.id, 0])),
+        drinksPrice: 0,
+        freeLevels: Object.fromEntries(FREE.map(f => [f.id, 1])), // Default levels
+        sauceLevels: Object.fromEntries(SAUCES.map(s => [s.id, 1])), // Default levels
+        total: total
+    };
+  }
+
   // Renderers
   const app = el("#app");
   app.innerHTML = [
@@ -1010,6 +1033,8 @@
     }
   }
 
+  let isNavigating = false;
+
   function renderBottom(){
     const b = el("#bottom");
     const { total, cartTotal } = prices();
@@ -1022,10 +1047,15 @@
       <button class="btn ${state.step>=5?'secondary':'primary'}" id="nextBtn">${state.step>=5?'پایان':'بعدی'}</button>
     `;
     el("#prevBtn") && el("#prevBtn").addEventListener("click", ()=>{
-      let prev = state.step-1; if(state.step===4 && !selectedItem().customizable) prev=1; state.step = Math.max(0,prev); render();
+      if(isNavigating) return;
+      let prev = state.step-1;
+      if(state.step===4 && !selectedItem().customizable) prev=1;
+      state.step = Math.max(0,prev);
+      render('backward');
     });
     el("#cartBtn").addEventListener("click", ()=> openCart());
     el("#nextBtn").addEventListener("click", ()=>{
+      if(isNavigating) return;
       if (state.step === 0 && !state.selectedId) {
         alert('لطفا یک آیتم انتخاب کنید');
         return;
@@ -1037,20 +1067,25 @@
       let nxt = state.step+1;
       if(nxt===2 && !selectedItem().customizable) nxt = 4;
       state.step = Math.min(5, nxt);
-      render();
+      render('forward');
     });
   }
 
-  function render(){
+  function render(direction = 'initial'){
+    if (isNavigating && direction !== 'initial') return;
+    isNavigating = true;
+
     renderHeader();
     const c = el("#content");
     const it = selectedItem();
     const { base, extraPrice, drinksPrice, subtotal, total, cartTotal } = prices();
 
+    let newContentHTML = '';
+
     if(state.step===0){
       // Step 1: pick sandwich
       const TOP = MENU.filter(m => m.isSpecial).map(m => m.id);
-      c.innerHTML = `
+      newContentHTML = `
         <section class="section">
           <h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2>
           <div class="quick-grid">
@@ -1071,6 +1106,9 @@
                       ? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`
                       : `<span>از ${fmt(t.sizes[0].price)}</span>`
                     }
+                  </div>
+                  <div class="card-actions">
+                    <button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button>
                   </div>
                 </div>
                 ${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}
@@ -1096,6 +1134,9 @@
                       : `<span>از ${fmt(m.sizes[0].price)}</span>`
                     }
                   </div>
+                  <div class="card-actions">
+                    <button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button>
+                  </div>
                 </div>
                 ${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}
               </div>
@@ -1103,29 +1144,12 @@
           </div>
         </section>
       `;
-      const handleThemeChange = debounce((card) => {
-        state.selectedId = card.getAttribute("data-id");
-        state.sizeId = null; // Reset size selection
-        if (card.classList.contains('quick-card')) {
-            state.sizeId = selectedItem().sizes[0].id;
-            resetCustomizations();
-        }
-        const item = selectedItem();
-        applyTheme(item);
-        const soundToPlay = card.classList.contains('quick-card') ? 'special-sound' : (item.theme?.soundId || "ding");
-        play(soundToPlay);
-        render();
-      }, 400);
-
-      els(".quick-card, .menu-card", c).forEach(card => {
-        card.addEventListener("click", () => handleThemeChange(card));
-      });
     }
 
     if(state.step===1){
       // Step 2: size
       const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
-      c.innerHTML = `
+      newContentHTML = `
         <section class="section">
           <h2><span class="dot"></span> ${isPatMat ? '۲) انتخاب مقیاس پروژه' : '۲) انتخاب سایز / وزن'}</h2>
           <div class="quick-grid" style="grid-template-columns:repeat(${it.sizes.length},minmax(0,1fr))">
@@ -1138,15 +1162,12 @@
           </div>
         </section>
       `;
-      els("button[data-size]", c).forEach(b=>b.addEventListener("click", ()=>{
-        state.sizeId = b.getAttribute("data-size"); play("ding"); render();
-      }));
     }
 
     if(state.step===2 && it.customizable){
       // Step 3: free addons
       const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
-      c.innerHTML = `
+      newContentHTML = `
         <section class="section">
           <h2><span class="dot"></span> ${isPatMat ? '۳) مرحله آزمون و خطا' : '۳) مخلفات رایگان'}</h2>
           <div class="level">
@@ -1163,17 +1184,12 @@
           </div>
         </section>
       `;
-      els("button[data-free]", c).forEach(b=>b.addEventListener("click", ()=>{
-        const id=b.getAttribute("data-free"); const v=Number(b.getAttribute("data-val"));
-        state.freeLevels = { ...state.freeLevels, [id]: v };
-        vibrate(12); play("ding"); render();
-      }));
     }
 
     if((state.step===3 && it.customizable) || (state.step===2 && !it.customizable)){
       // Step 4: sauces (if customizable)
       const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
-      c.innerHTML = `
+      newContentHTML = `
         <section class="section">
           <h2><span class="dot"></span> ${isPatMat ? '۴) عملیات رنگ‌آمیزی' : '۴) سس‌ها'}</h2>
           ${it.customizable? `
@@ -1191,18 +1207,13 @@
           </div>` : `<div class="menu-sub">این آیتم قابل شخصی‌سازی نیست.</div>`}
         </section>
       `;
-      els("button[data-sauce]", c).forEach(b=>b.addEventListener("click", ()=>{
-        const id=b.getAttribute("data-sauce"); const v=Number(b.getAttribute("data-val"));
-        state.sauceLevels = { ...state.sauceLevels, [id]: v };
-        vibrate(12); play("ding"); render();
-      }));
     }
 
     if(state.step===4){
       // Step 5: extra & drinks
       const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
       const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
-      c.innerHTML = `
+      newContentHTML = `
         <section class="section">
           <h2><span class="dot"></span> ${isPatMat ? '۵) تهیه قطعات یدکی' : '۵) افزودنی‌ها'}</h2>
 
@@ -1269,29 +1280,6 @@
           </div>
         </section>
       `;
-      const extra = el("#extraRange", c);
-      extra && extra.addEventListener("input", e=>{
-        state.extraGrams = Number(extra.value); vibrate(10);
-        renderBottom(); // update price in badge
-        const viz = el(".extra-viz-wrapper");
-        if(viz) viz.innerHTML = renderExtraViz(selectedItem());
-      });
-      els("button[data-cheese]", c).forEach(b=>b.addEventListener("click", ()=>{
-        const d=Number(b.getAttribute("data-cheese"));
-        state.cheeseSlices = Math.max(0, (state.cheeseSlices||0) + d);
-        play("ding"); render();
-      }));
-      els("button[data-sauce-takeaway]", c).forEach(b=>b.addEventListener("click", ()=>{
-        const d=Number(b.getAttribute("data-sauce-takeaway"));
-        state.takeawaySauces = Math.max(0, (state.takeawaySauces||0) + d);
-        play("ding"); render();
-      }));
-      els("button[data-drink]", c).forEach(b=>b.addEventListener("click", ()=>{
-        const id=b.getAttribute("data-drink"); const d=Number(b.getAttribute("data-d"));
-        const q=Math.max(0,(state.drinks[id]||0)+d);
-        state.drinks = { ...state.drinks, [id]: q };
-        play("ding"); render();
-      }));
     }
 
     if(state.step===5){
@@ -1299,7 +1287,7 @@
       const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
       const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
       const orderTotal = cartTotal + total + drinksPrice;
-      c.innerHTML = `
+      newContentHTML = `
         <section class="section">
           <h2><span class="dot"></span> ${isPatMat ? '۶) کنترل نهایی و تحویل' : '۶) مرور و ثبت'}</h2>
           <div class="preview-wrap" style="overflow-x: auto; display: flex; gap: 10px; padding-bottom: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.2); margin-bottom: 14px;">
@@ -1339,38 +1327,166 @@
           </div>
         </section>
       `;
-      el("#addCart").addEventListener("click", ()=>{
-        state.cart.push( snapshotCurrent() );
-        state.step = 0;
-        resetCustomizations();
-        // also reset sandwich choice to default for the new item
-        state.selectedId = MENU[0].id;
-        state.sizeId = MENU[0].sizes[0].id;
-        state.drinks = Object.fromEntries(DRINKS.map(d=>[d.id,0])); // Reset drinks for next item
-        play("ding");
-        render();
-      });
-      el("#payPrint").addEventListener("click", ()=>{
-        // finalize order
-        const items = [...state.cart, snapshotCurrent()];
-        state.cart = []; state.checkoutItems = items;
-        try{
-          const today = new Date().toISOString().slice(0,10);
-          const day = localStorage.getItem('hy_day')||'';
-          let seq = Number(localStorage.getItem('hy_seq')||String(ORDER_START-1))||0;
-          if(day!==today){ localStorage.setItem('hy_day', today); seq = ORDER_START-1; }
-          seq += 1; localStorage.setItem('hy_seq', String(seq)); state.orderSeq = seq;
-        }catch(e){}
-        state.submitted = true;
-        play("success");
-        openReceipt();
-        // Auto-print for the user
-        setTimeout(() => {
-          const printBtn = el("#printBtn");
-          if (printBtn) printBtn.click();
-        }, 100); // 100ms delay to ensure modal is in DOM
+    }
+
+    const oldContent = el('.step-content', c);
+    if (oldContent && direction !== 'initial') {
+      const outClass = direction === 'forward' ? 'slide-out-left' : 'slide-out-right';
+      oldContent.classList.add(outClass);
+      oldContent.addEventListener('transitionend', () => {
+        oldContent.remove();
+      }, { once: true });
+    }
+
+    const newContent = document.createElement('div');
+    newContent.className = 'step-content';
+    if (direction !== 'initial') {
+      const inClass = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
+      newContent.classList.add(inClass);
+    }
+    newContent.innerHTML = newContentHTML;
+    c.appendChild(newContent);
+
+    // Bind events to the new content
+    if (state.step === 0) {
+        const handleThemeChange = debounce((card) => {
+            state.selectedId = card.getAttribute("data-id");
+            state.sizeId = null;
+            if (card.classList.contains('quick-card')) {
+                state.sizeId = selectedItem().sizes[0].id;
+                resetCustomizations();
+            }
+            const item = selectedItem();
+            applyTheme(item);
+            const soundToPlay = card.classList.contains('quick-card') ? 'special-sound' : (item.theme?.soundId || "ding");
+            play(soundToPlay);
+            render('initial'); // Re-render without animation for theme change
+        }, 400);
+
+        els(".quick-card, .menu-card", newContent).forEach(card => {
+            card.addEventListener("click", () => handleThemeChange(card));
+        });
+
+        els("button[data-quick-add]", newContent).forEach(btn => {
+            btn.addEventListener("click", e => {
+                e.stopPropagation();
+                const itemId = e.currentTarget.getAttribute("data-quick-add");
+                const item = MENU.find(m => m.id === itemId);
+                if (item) {
+                    const cartItem = createCartItem(item);
+                    if (cartItem) {
+                        state.cart.push(cartItem);
+                        play("success");
+                        renderBottom();
+                        e.currentTarget.innerHTML = '✓ اضافه شد';
+                        e.currentTarget.disabled = true;
+                        setTimeout(() => {
+                            e.currentTarget.innerHTML = 'افزودن سریع';
+                            e.currentTarget.disabled = false;
+                        }, 1500);
+                    }
+                }
+            });
+        });
+    } else if (state.step === 1) {
+        els("button[data-size]", newContent).forEach(b => b.addEventListener("click", () => {
+            state.sizeId = b.getAttribute("data-size");
+            play("ding");
+            render('initial');
+        }));
+    } else if (state.step === 2 && it.customizable) {
+        els("button[data-free]", newContent).forEach(b => b.addEventListener("click", () => {
+            const id = b.getAttribute("data-free");
+            const v = Number(b.getAttribute("data-val"));
+            state.freeLevels = { ...state.freeLevels, [id]: v };
+            vibrate(12);
+            play("ding");
+            render('initial');
+        }));
+    } else if ((state.step === 3 && it.customizable) || (state.step === 2 && !it.customizable)) {
+        els("button[data-sauce]", newContent).forEach(b => b.addEventListener("click", () => {
+            const id = b.getAttribute("data-sauce");
+            const v = Number(b.getAttribute("data-val"));
+            state.sauceLevels = { ...state.sauceLevels, [id]: v };
+            vibrate(12);
+            play("ding");
+            render('initial');
+        }));
+    } else if (state.step === 4) {
+        const extra = el("#extraRange", newContent);
+        extra && extra.addEventListener("input", e => {
+            state.extraGrams = Number(extra.value);
+            vibrate(10);
+            renderBottom();
+            const viz = el(".extra-viz-wrapper");
+            if (viz) viz.innerHTML = renderExtraViz(selectedItem());
+        });
+        els("button[data-cheese]", newContent).forEach(b => b.addEventListener("click", () => {
+            const d = Number(b.getAttribute("data-cheese"));
+            state.cheeseSlices = Math.max(0, (state.cheeseSlices || 0) + d);
+            play("ding");
+            render('initial');
+        }));
+        els("button[data-sauce-takeaway]", newContent).forEach(b => b.addEventListener("click", () => {
+            const d = Number(b.getAttribute("data-sauce-takeaway"));
+            state.takeawaySauces = Math.max(0, (state.takeawaySauces || 0) + d);
+            play("ding");
+            render('initial');
+        }));
+        els("button[data-drink]", newContent).forEach(b => b.addEventListener("click", () => {
+            const id = b.getAttribute("data-drink");
+            const d = Number(b.getAttribute("data-d"));
+            const q = Math.max(0, (state.drinks[id] || 0) + d);
+            state.drinks = { ...state.drinks, [id]: q };
+            play("ding");
+            render('initial');
+        }));
+    } else if (state.step === 5) {
+        el("#addCart", newContent).addEventListener("click", () => {
+            state.cart.push(snapshotCurrent());
+            state.step = 0;
+            resetCustomizations();
+            state.selectedId = MENU[0].id;
+            state.sizeId = MENU[0].sizes[0].id;
+            state.drinks = Object.fromEntries(DRINKS.map(d => [d.id, 0]));
+            play("ding");
+            render('forward');
+        });
+        el("#payPrint", newContent).addEventListener("click", () => {
+            const items = [...state.cart, snapshotCurrent()];
+            state.cart = [];
+            state.checkoutItems = items;
+            try {
+                const today = new Date().toISOString().slice(0, 10);
+                const day = localStorage.getItem('hy_day') || '';
+                let seq = Number(localStorage.getItem('hy_seq') || String(ORDER_START - 1)) || 0;
+                if (day !== today) {
+                    localStorage.setItem('hy_day', today);
+                    seq = ORDER_START - 1;
+                }
+                seq += 1;
+                localStorage.setItem('hy_seq', String(seq));
+                state.orderSeq = seq;
+            } catch (e) {}
+            state.submitted = true;
+            play("success");
+            openReceipt();
+            setTimeout(() => {
+                const printBtn = el("#printBtn");
+                if (printBtn) printBtn.click();
+            }, 100);
+        });
+    }
+
+    if (direction !== 'initial') {
+      requestAnimationFrame(() => {
+        newContent.classList.remove('slide-in-right', 'slide-in-left');
       });
     }
+
+    setTimeout(() => {
+      isNavigating = false;
+    }, 400); // Animation duration
 
     renderBottom();
   }
