@@ -1035,27 +1035,27 @@
 
   let isNavigating = false;
 
-  function renderBottom(){
+  function renderBottom() {
     const b = el("#bottom");
     const { total, cartTotal } = prices();
-    const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
+    const drinksPrice = Object.entries(state.drinks).reduce((s, [id, q]) => { const d = DRINKS.find(x => x.id === id); return s + (d ? d.price * q : 0); }, 0);
     const orderTotal = cartTotal + total + drinksPrice;
     b.innerHTML = `
-      <button class="btn" ${state.step===0?'disabled':''} id="prevBtn">قبلی</button>
+      <button class="btn" ${state.step === 0 ? 'disabled' : ''} id="prevBtn">قبلی</button>
       <button class="btn" id="cartBtn">سبد (${state.cart.length})</button>
-      <div class="total-badge">${state.isHappy?'<span class="muted">جمع سفارش (با تخفیف):</span>':'جمع سفارش:'} <b>${fmt(orderTotal)}</b></div>
-      <button class="btn ${state.step>=5?'secondary':'primary'}" id="nextBtn">${state.step>=5?'پایان':'بعدی'}</button>
+      <div class="total-badge">${state.isHappy ? '<span class="muted">جمع سفارش (با تخفیف):</span>' : 'جمع سفارش:'} <b>${fmt(orderTotal)}</b></div>
+      <button class="btn ${state.step >= 5 ? 'secondary' : 'primary'}" id="nextBtn">${state.step >= 5 ? 'پایان' : 'بعدی'}</button>
     `;
-    el("#prevBtn") && el("#prevBtn").addEventListener("click", ()=>{
-      if(isNavigating) return;
-      let prev = state.step-1;
-      if(state.step===4 && !selectedItem().customizable) prev=1;
-      state.step = Math.max(0,prev);
+    el("#prevBtn") && el("#prevBtn").addEventListener("click", () => {
+      if (isNavigating) return;
+      let prev = state.step - 1;
+      if (state.step === 4 && !selectedItem().customizable) prev = 1;
+      state.step = Math.max(0, prev);
       render('backward');
     });
-    el("#cartBtn").addEventListener("click", ()=> openCart());
-    el("#nextBtn").addEventListener("click", ()=>{
-      if(isNavigating) return;
+    el("#cartBtn").addEventListener("click", () => openCart());
+    el("#nextBtn").addEventListener("click", () => {
+      if (isNavigating) return;
       if (state.step === 0 && !state.selectedId) {
         alert('لطفا یک آیتم انتخاب کنید');
         return;
@@ -1064,585 +1064,215 @@
         alert('لطفا یک سایز انتخاب کنید');
         return;
       }
-      let nxt = state.step+1;
-      if(nxt===2 && !selectedItem().customizable) nxt = 4;
+      let nxt = state.step + 1;
+      if (nxt === 2 && !selectedItem().customizable) nxt = 4;
       state.step = Math.min(5, nxt);
       render('forward');
     });
   }
 
-  function render(direction = 'initial'){
+  function bindStepEvents(contentElement) {
+    const it = selectedItem();
+    if (state.step === 0) {
+      const handleThemeChange = debounce((card) => {
+        state.selectedId = card.getAttribute("data-id");
+        state.sizeId = null;
+        if (card.classList.contains('quick-card')) {
+          state.sizeId = selectedItem().sizes[0].id;
+          resetCustomizations();
+        }
+        const item = selectedItem();
+        applyTheme(item);
+        const soundToPlay = card.classList.contains('quick-card') ? 'special-sound' : (item.theme?.soundId || "ding");
+        play(soundToPlay);
+        render('initial');
+      }, 400);
+
+      els(".quick-card, .menu-card", contentElement).forEach(card => {
+        card.addEventListener("click", () => handleThemeChange(card));
+      });
+
+      els("button[data-quick-add]", contentElement).forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          const itemId = e.currentTarget.getAttribute("data-quick-add");
+          const item = MENU.find(m => m.id === itemId);
+          if (item) {
+            const cartItem = createCartItem(item);
+            if (cartItem) {
+              state.cart.push(cartItem);
+              play("success");
+              renderBottom();
+              e.currentTarget.innerHTML = '✓ اضافه شد';
+              e.currentTarget.disabled = true;
+              setTimeout(() => {
+                e.currentTarget.innerHTML = 'افزودن سریع';
+                e.currentTarget.disabled = false;
+              }, 1500);
+            }
+          }
+        });
+      });
+    } else if (state.step === 1) {
+      els("button[data-size]", contentElement).forEach(b => b.addEventListener("click", () => {
+        state.sizeId = b.getAttribute("data-size");
+        play("ding");
+        render('initial');
+      }));
+    } else if (state.step === 2 && it.customizable) {
+      els("button[data-free]", contentElement).forEach(b => b.addEventListener("click", () => {
+        const id = b.getAttribute("data-free");
+        const v = Number(b.getAttribute("data-val"));
+        state.freeLevels = { ...state.freeLevels, [id]: v };
+        vibrate(12);
+        play("ding");
+        render('initial');
+      }));
+    } else if ((state.step === 3 && it.customizable) || (state.step === 2 && !it.customizable)) {
+      els("button[data-sauce]", contentElement).forEach(b => b.addEventListener("click", () => {
+        const id = b.getAttribute("data-sauce");
+        const v = Number(b.getAttribute("data-val"));
+        state.sauceLevels = { ...state.sauceLevels, [id]: v };
+        vibrate(12);
+        play("ding");
+        render('initial');
+      }));
+    } else if (state.step === 4) {
+      const extra = el("#extraRange", contentElement);
+      extra && extra.addEventListener("input", e => {
+        state.extraGrams = Number(extra.value);
+        vibrate(10);
+        renderBottom();
+        const viz = el(".extra-viz-wrapper");
+        if (viz) viz.innerHTML = renderExtraViz(selectedItem());
+      });
+      els("button[data-cheese]", contentElement).forEach(b => b.addEventListener("click", () => {
+        const d = Number(b.getAttribute("data-cheese"));
+        state.cheeseSlices = Math.max(0, (state.cheeseSlices || 0) + d);
+        play("ding");
+        render('initial');
+      }));
+      els("button[data-sauce-takeaway]", contentElement).forEach(b => b.addEventListener("click", () => {
+        const d = Number(b.getAttribute("data-sauce-takeaway"));
+        state.takeawaySauces = Math.max(0, (state.takeawaySauces || 0) + d);
+        play("ding");
+        render('initial');
+      }));
+      els("button[data-drink]", contentElement).forEach(b => b.addEventListener("click", () => {
+        const id = b.getAttribute("data-drink");
+        const d = Number(b.getAttribute("data-d"));
+        const q = Math.max(0, (state.drinks[id] || 0) + d);
+        state.drinks = { ...state.drinks, [id]: q };
+        play("ding");
+        render('initial');
+      }));
+    } else if (state.step === 5) {
+      el("#addCart", contentElement).addEventListener("click", () => {
+        state.cart.push(snapshotCurrent());
+        state.step = 0;
+        resetCustomizations();
+        state.selectedId = MENU[0].id;
+        state.sizeId = MENU[0].sizes[0].id;
+        state.drinks = Object.fromEntries(DRINKS.map(d => [d.id, 0]));
+        play("ding");
+        render('forward');
+      });
+      el("#payPrint", contentElement).addEventListener("click", () => {
+        const items = [...state.cart, snapshotCurrent()];
+        state.cart = [];
+        state.checkoutItems = items;
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          const day = localStorage.getItem('hy_day') || '';
+          let seq = Number(localStorage.getItem('hy_seq') || String(ORDER_START - 1)) || 0;
+          if (day !== today) {
+            localStorage.setItem('hy_day', today);
+            seq = ORDER_START - 1;
+          }
+          seq += 1;
+          localStorage.setItem('hy_seq', String(seq));
+          state.orderSeq = seq;
+        } catch (e) {}
+        state.submitted = true;
+        play("success");
+        openReceipt();
+        setTimeout(() => {
+          const printBtn = el("#printBtn");
+          if (printBtn) printBtn.click();
+        }, 100);
+      });
+    }
+  }
+
+  function render(direction = 'initial') {
     if (isNavigating && direction !== 'initial') return;
-    isNavigating = true;
 
     renderHeader();
     const c = el("#content");
     const it = selectedItem();
-    const { base, extraPrice, drinksPrice, subtotal, total, cartTotal } = prices();
 
     let newContentHTML = '';
 
     if(state.step===0){
-      // Step 1: pick sandwich
       const TOP = MENU.filter(m => m.isSpecial).map(m => m.id);
-      newContentHTML = `
-        <section class="section">
-          <h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2>
-          <div class="quick-grid">
-            ${TOP.map(id=>{
-              const t = MENU.find(m=>m.id===id);
-              return `<div class="quick-card" data-id="${t.id}">
-                <div class="card-image-wrapper">
-                    <img src="${t.img||''}" alt=""/>
-                </div>
-                <div>
-                  <div class="quick-title">${t.emoji || ''} ${t.name}</div>
-                  <div class="menu-description">${t.description || ''}</div>
-                  <div class="tags-container">
-                        ${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
-                  </div>
-                  <div class="quick-sub">
-                    ${state.isHappy
-                      ? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`
-                      : `<span>از ${fmt(t.sizes[0].price)}</span>`
-                    }
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button>
-                  </div>
-                </div>
-                ${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}
-              </div>`;
-            }).join("")}
-          </div>
-          <div class="divider"></div>
-          <div class="menu-grid">
-            ${MENU.map(m=>`
-              <div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}">
-                <div class="card-image-wrapper">
-                    <img src="${m.img||''}" alt=""/>
-                </div>
-                <div>
-                  <div class="menu-title">${m.emoji || ''} ${m.name}</div>
-                  <div class="menu-description">${m.description || ''}</div>
-                  <div class="tags-container">
-                        ${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}
-                  </div>
-                  <div class="menu-sub">
-                    ${state.isHappy
-                      ? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`
-                      : `<span>از ${fmt(m.sizes[0].price)}</span>`
-                    }
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button>
-                  </div>
-                </div>
-                ${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}
-              </div>
-            `).join("")}
-          </div>
-        </section>
-      `;
-    }
-
-    if(state.step===1){
-      // Step 2: size
-      const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
-      newContentHTML = `
-        <section class="section">
-          <h2><span class="dot"></span> ${isPatMat ? '۲) انتخاب مقیاس پروژه' : '۲) انتخاب سایز / وزن'}</h2>
-          <div class="quick-grid" style="grid-template-columns:repeat(${it.sizes.length},minmax(0,1fr))">
-            ${it.sizes.map(s=>`
-              <button class="btn ${state.sizeId===s.id?'primary':''}" data-size="${s.id}">
-                <div style="font-weight:900">${s.label}</div>
-                <div style="font-size:12px;color:#cbd5e1">${fmt(s.price)}</div>
-              </button>
-            `).join("")}
-          </div>
-        </section>
-      `;
-    }
-
-    if(state.step===2 && it.customizable){
-      // Step 3: free addons
-      const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
-      newContentHTML = `
-        <section class="section">
-          <h2><span class="dot"></span> ${isPatMat ? '۳) مرحله آزمون و خطا' : '۳) مخلفات رایگان'}</h2>
-          <div class="level">
-            ${FREE.map(f=>`
-              <div>
-                <div style="margin:6px 0;font-weight:700">${f.label}</div>
-                <div class="row">
-                  ${LEVELS.map(l=>`
-                    <button class="btn" data-free="${f.id}" data-val="${l.id}" aria-pressed="${state.freeLevels[f.id]===l.id}">${l.label}</button>
-                  `).join("")}
-                </div>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-      `;
-    }
-
-    if((state.step===3 && it.customizable) || (state.step===2 && !it.customizable)){
-      // Step 4: sauces (if customizable)
-      const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
-      newContentHTML = `
-        <section class="section">
-          <h2><span class="dot"></span> ${isPatMat ? '۴) عملیات رنگ‌آمیزی' : '۴) سس‌ها'}</h2>
-          ${it.customizable? `
-          <div class="level">
-            ${SAUCES.map(s=>`
-              <div>
-                <div style="margin:6px 0;font-weight:700">${s.label}</div>
-                <div class="row">
-                  ${LEVELS.map(l=>`
-                    <button class="btn" data-sauce="${s.id}" data-val="${l.id}" aria-pressed="${state.sauceLevels[s.id]===l.id}">${l.label}</button>
-                  `).join("")}
-                </div>
-              </div>
-            `).join("")}
-          </div>` : `<div class="menu-sub">این آیتم قابل شخصی‌سازی نیست.</div>`}
-        </section>
-      `;
-    }
-
-    if(state.step===4){
-      // Step 5: extra & drinks
-      const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2><div class="quick-grid">${TOP.map(id=>{const t = MENU.find(m=>m.id===id);return `<div class="quick-card" data-id="${t.id}"><div class="card-image-wrapper"><img src="${t.img||''}" alt=""/></div><div><div class="quick-title">${t.emoji || ''} ${t.name}</div><div class="menu-description">${t.description || ''}</div><div class="tags-container">${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="quick-sub">${state.isHappy? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(t.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}</div>`;}).join("")}</div><div class="divider"></div><div class="menu-grid">${MENU.map(m=>`<div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}"><div class="card-image-wrapper"><img src="${m.img||''}" alt=""/></div><div><div class="menu-title">${m.emoji || ''} ${m.name}</div><div class="menu-description">${m.description || ''}</div><div class="tags-container">${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="menu-sub">${state.isHappy? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(m.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}</div>`).join("")}</div></section>`;
+    } else if(state.step===1){
+      const isPatMat = it.theme?.className === 'theme-pat-mat';
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۲) انتخاب مقیاس پروژه' : '۲) انتخاب سایز / وزن'}</h2><div class="quick-grid" style="grid-template-columns:repeat(${it.sizes.length},minmax(0,1fr))">${it.sizes.map(s=>`<button class="btn ${state.sizeId===s.id?'primary':''}" data-size="${s.id}"><div style="font-weight:900">${s.label}</div><div style="font-size:12px;color:#cbd5e1">${fmt(s.price)}</div></button>`).join("")}</div></section>`;
+    } else if(state.step===2 && it.customizable){
+      const isPatMat = it.theme?.className === 'theme-pat-mat';
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۳) مرحله آزمون و خطا' : '۳) مخلفات رایگان'}</h2><div class="level">${FREE.map(f=>`<div><div style="margin:6px 0;font-weight:700">${f.label}</div><div class="row">${LEVELS.map(l=>`<button class="btn" data-free="${f.id}" data-val="${l.id}" aria-pressed="${state.freeLevels[f.id]===l.id}">${l.label}</button>`).join("")}</div></div>`).join("")}</div></section>`;
+    } else if((state.step===3 && it.customizable) || (state.step===2 && !it.customizable)){
+      const isPatMat = it.theme?.className === 'theme-pat-mat';
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۴) عملیات رنگ‌آمیزی' : '۴) سس‌ها'}</h2>${it.customizable? `<div class="level">${SAUCES.map(s=>`<div><div style="margin:6px 0;font-weight:700">${s.label}</div><div class="row">${LEVELS.map(l=>`<button class="btn" data-sauce="${s.id}" data-val="${l.id}" aria-pressed="${state.sauceLevels[s.id]===l.id}">${l.label}</button>`).join("")}</div></div>`).join("")}</div>` : `<div class="menu-sub">این آیتم قابل شخصی‌سازی نیست.</div>`}</section>`;
+    } else if(state.step===4){
+      const isPatMat = it.theme?.className === 'theme-pat-mat';
       const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
-      newContentHTML = `
-        <section class="section">
-          <h2><span class="dot"></span> ${isPatMat ? '۵) تهیه قطعات یدکی' : '۵) افزودنی‌ها'}</h2>
-
-          ${(it.customizable && it.extra.unitPrice>0)?`
-            <div class="slider-wrap" style="margin-bottom: 20px;">
-              <div style="font-weight:700;margin-bottom:6px">کالباس اضافه</div>
-              <input type="range" min="0" max="200" step="${it.extra.step}" value="${state.extraGrams}" id="extraRange"/>
-              <div class="range-meta"><span>افزایش: ${state.extraGrams} گرم</span><span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span></div>
-              <div class="extra-viz-wrapper">
-                ${renderExtraViz(it)}
-              </div>
-            </div>`:''}
-
-            <div style="font-weight:700;margin-bottom:6px">افزودنی‌های پولی</div>
-            <div class="drinks">
-              <div class="drink">
-                <div style="display:flex;align-items:center;gap:10px">
-                    <img src="img/addon-gouda-slice.webp" alt="پنیر گودا"/>
-                    <div>
-                      <div class="name">پنیر گودا ورقه‌ای</div>
-                      <div style="font-size:12px;color:#cbd5e1">${fmt(CHEESE_PRICE)} / ورق</div>
-                    </div>
-                  </div>
-                  <div class="qty">
-                    <button data-cheese="-1">−</button>
-                    <div class="n">${state.cheeseSlices||0}</div>
-                    <button data-cheese="1">+</button>
-                  </div>
-                </div>
-                <div class="drink">
-                  <div style="display:flex;align-items:center;gap:10px">
-                    <img src="https://hayola.hornspeed.com/img/addon-sauce.webp" alt="سس تک نفره"/>
-                    <div>
-                      <div class="name">سس تک نفره بیرون بر</div>
-                      <div style="font-size:12px;color:#cbd5e1">${fmt(SAUCE_PRICE)} / عدد</div>
-                    </div>
-                  </div>
-                  <div class="qty">
-                    <button data-sauce-takeaway="-1">−</button>
-                    <div class="n">${state.takeawaySauces||0}</div>
-                    <button data-sauce-takeaway="1">+</button>
-                  </div>
-                </div>
-                <div class="divider" style="margin: 12px 0;"></div>
-                ${DRINKS.map(d=>`
-                  <div class="drink">
-                    <div style="display:flex;align-items:center;gap:10px">
-                      <img src="${d.img||''}" alt=""/>
-                      <div>
-                        <div class="name">${d.name}</div>
-                        <div style="font-size:12px;color:#cbd5e1">${fmt(d.price)} / عدد</div>
-                      </div>
-                    </div>
-                    <div class="qty">
-                      <button data-drink="${d.id}" data-d="-1">−</button>
-                      <div class="n">${state.drinks[d.id]||0}</div>
-                      <button data-drink="${d.id}" data-d="1">+</button>
-                    </div>
-                  </div>
-                `).join("")}
-              </div>
-              <div style="text-align:right;margin-top:8px;font-size:13px;color:#cbd5e1">هزینه نوشیدنی‌ها: <b>${fmt(drinksPrice)}</b></div>
-            </div>
-          </div>
-        </section>
-      `;
-    }
-
-    if(state.step===5){
-      // Step 6: review & add/checkout
-      const isPatMat = selectedItem().theme?.className === 'theme-pat-mat';
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۵) تهیه قطعات یدکی' : '۵) افزودنی‌ها'}</h2>${(it.customizable && it.extra.unitPrice>0)?`<div class="slider-wrap" style="margin-bottom: 20px;"><div style="font-weight:700;margin-bottom:6px">کالباس اضافه</div><input type="range" min="0" max="200" step="${it.extra.step}" value="${state.extraGrams}" id="extraRange"/><div class="range-meta"><span>افزایش: ${state.extraGrams} گرم</span><span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span></div><div class="extra-viz-wrapper">${renderExtraViz(it)}</div></div>`:''}<div style="font-weight:700;margin-bottom:6px">افزودنی‌های پولی</div><div class="drinks"><div class="drink"><div style="display:flex;align-items:center;gap:10px"><img src="img/addon-gouda-slice.webp" alt="پنیر گودا"/><div><div class="name">پنیر گودا ورقه‌ای</div><div style="font-size:12px;color:#cbd5e1">${fmt(CHEESE_PRICE)} / ورق</div></div></div><div class="qty"><button data-cheese="-1">−</button><div class="n">${state.cheeseSlices||0}</div><button data-cheese="1">+</button></div></div><div class="drink"><div style="display:flex;align-items:center;gap:10px"><img src="https://hayola.hornspeed.com/img/addon-sauce.webp" alt="سس تک نفره"/><div><div class="name">سس تک نفره بیرون بر</div><div style="font-size:12px;color:#cbd5e1">${fmt(SAUCE_PRICE)} / عدد</div></div></div><div class="qty"><button data-sauce-takeaway="-1">−</button><div class="n">${state.takeawaySauces||0}</div><button data-sauce-takeaway="1">+</button></div></div><div class="divider" style="margin: 12px 0;"></div>${DRINKS.map(d=>`<div class="drink"><div style="display:flex;align-items:center;gap:10px"><img src="${d.img||''}" alt=""/><div><div class="name">${d.name}</div><div style="font-size:12px;color:#cbd5e1">${fmt(d.price)} / عدد</div></div></div><div class="qty"><button data-drink="${d.id}" data-d="-1">−</button><div class="n">${state.drinks[d.id]||0}</div><button data-drink="${d.id}" data-d="1">+</button></div></div>`).join("")}</div><div style="text-align:right;margin-top:8px;font-size:13px;color:#cbd5e1">هزینه نوشیدنی‌ها: <b>${fmt(drinksPrice)}</b></div></div></section>`;
+    } else if(state.step===5){
+      const isPatMat = it.theme?.className === 'theme-pat-mat';
       const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
+      const { total, cartTotal } = prices();
       const orderTotal = cartTotal + total + drinksPrice;
-      newContentHTML = `
-        <section class="section">
-          <h2><span class="dot"></span> ${isPatMat ? '۶) کنترل نهایی و تحویل' : '۶) مرور و ثبت'}</h2>
-          <div class="preview-wrap" style="overflow-x: auto; display: flex; gap: 10px; padding-bottom: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.2); margin-bottom: 14px;">
-            ${[...state.cart, snapshotCurrent()].map(item => `
-              <div class="preview-item" style="flex: 0 0 120px; text-align: center;">
-                <div class="preview" style="height: 120px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 5px;">
-                  ${generateSandwichSVG(item)}
-                </div>
-                <div style="font-size: 12px; font-weight: 700; margin-top: 8px; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 2px 6px; color: white;">${item.name}</div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="review-grid" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))">
-            <div class="order-summary" style="display:flex; flex-direction:column; gap:8px;">
-              ${[...state.cart, snapshotCurrent()].map(item => {
-                const customizations = [];
-                if (item.freeLevels) { Object.entries(item.freeLevels).forEach(([id, level]) => { if (level !== 1) { const freebie = FREE.find(f => f.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (freebie && levelInfo) customizations.push(`${freebie.label}: ${levelInfo.label}`); } }); }
-                if (item.sauceLevels) { Object.entries(item.sauceLevels).forEach(([id, level]) => { if (level !== 1) { const sauce = SAUCES.find(s => s.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (sauce && levelInfo) customizations.push(`${sauce.label}: ${levelInfo.label}`); } }); }
-                if (item.extraGrams > 0) { customizations.push(`کالباس اضافه: ${item.extraGrams} گرم`); }
-                if (item.cheeseSlices > 0) { customizations.push(`پنیر اضافه: ${item.cheeseSlices} ورق`); }
-
-                return `
-                  <div class="summary-item" style="border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px;">
-                    <div style="font-weight: 800; font-size: 18px;">${item.name} <span style="font-size: 14px; color: var(--muted);">(${item.sizeLabel})</span></div>
-                    ${customizations.length ? `<div style="font-size: 12px; color: var(--accent); padding-top: 4px;">${customizations.join(' • ')}</div>` : ''}
-                  </div>
-                `;
-              }).join('')}
-              <div class="divider"></div>
-              <div style="display:flex;justify-content:space-between; font-size: 18px; font-weight: 900;"><div>جمع کل</div><div>${fmt(orderTotal)}</div></div>
-            </div>
-            <div class="no-print" style="display:grid;gap:8px;align-content:start">
-              <button class="btn" id="addCart">افزودن به سبد و ساخت ساندویچ بعدی</button>
-              <button class="btn primary" id="payPrint">پرداخت و چاپ</button>
-              <div style="font-size:12px;color:#cbd5e1">برای چند سفارش: آیتم را به سبد اضافه کن؛ در پایان پرداخت و چاپ.</div>
-            </div>
-          </div>
-        </section>
-      `;
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۶) کنترل نهایی و تحویل' : '۶) مرور و ثبت'}</h2><div class="preview-wrap" style="overflow-x: auto; display: flex; gap: 10px; padding-bottom: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.2); margin-bottom: 14px;">${[...state.cart, snapshotCurrent()].map(item => `<div class="preview-item" style="flex: 0 0 120px; text-align: center;"><div class="preview" style="height: 120px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 5px;">${generateSandwichSVG(item)}</div><div style="font-size: 12px; font-weight: 700; margin-top: 8px; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 2px 6px; color: white;">${item.name}</div></div>`).join('')}</div><div class="review-grid" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))"><div class="order-summary" style="display:flex; flex-direction:column; gap:8px;">${[...state.cart, snapshotCurrent()].map(item => {const customizations = [];if (item.freeLevels) { Object.entries(item.freeLevels).forEach(([id, level]) => { if (level !== 1) { const freebie = FREE.find(f => f.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (freebie && levelInfo) customizations.push(`${freebie.label}: ${levelInfo.label}`); } }); }if (item.sauceLevels) { Object.entries(item.sauceLevels).forEach(([id, level]) => { if (level !== 1) { const sauce = SAUCES.find(s => s.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (sauce && levelInfo) customizations.push(`${sauce.label}: ${levelInfo.label}`); } }); }if (item.extraGrams > 0) { customizations.push(`کالباس اضافه: ${item.extraGrams} گرم`); }if (item.cheeseSlices > 0) { customizations.push(`پنیر اضافه: ${item.cheeseSlices} ورق`); }return `<div class="summary-item" style="border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px;"><div style="font-weight: 800; font-size: 18px;">${item.name} <span style="font-size: 14px; color: var(--muted);">(${item.sizeLabel})</span></div>${customizations.length ? `<div style="font-size: 12px; color: var(--accent); padding-top: 4px;">${customizations.join(' • ')}</div>` : ''}</div>`;}).join('')}<div class="divider"></div><div style="display:flex;justify-content:space-between; font-size: 18px; font-weight: 900;"><div>جمع کل</div><div>${fmt(orderTotal)}</div></div></div><div class="no-print" style="display:grid;gap:8px;align-content:start"><button class="btn" id="addCart">افزودن به سبد و ساخت ساندویچ بعدی</button><button class="btn primary" id="payPrint">پرداخت و چاپ</button><div style="font-size:12px;color:#cbd5e1">برای چند سفارش: آیتم را به سبد اضافه کن؛ در پایان پرداخت و چاپ.</div></div></div></section>`;
     }
 
-    const oldContent = el('.step-content', c);
-    if (oldContent && direction !== 'initial') {
-      const outClass = direction === 'forward' ? 'slide-out-left' : 'slide-out-right';
-      oldContent.classList.add(outClass);
-      oldContent.addEventListener('transitionend', () => {
+    if (direction === 'initial') {
+      const oldContent = el('.step-content', c);
+      if (oldContent) {
         oldContent.remove();
-      }, { once: true });
-    }
+      }
+      const newContent = document.createElement('div');
+      newContent.className = 'step-content';
+      newContent.innerHTML = newContentHTML;
+      c.appendChild(newContent);
+      bindStepEvents(newContent);
+      isNavigating = false;
+    } else {
+      isNavigating = true;
+      const oldContent = el('.step-content', c);
+      if (oldContent) {
+        const outClass = direction === 'forward' ? 'slide-out-left' : 'slide-out-right';
+        oldContent.classList.add(outClass);
+        oldContent.addEventListener('transitionend', () => oldContent.remove(), { once: true });
+      }
 
-    const newContent = document.createElement('div');
-    newContent.className = 'step-content';
-    if (direction !== 'initial') {
+      const newContent = document.createElement('div');
+      newContent.className = 'step-content';
       const inClass = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
       newContent.classList.add(inClass);
-    }
-    newContent.innerHTML = newContentHTML;
-    c.appendChild(newContent);
+      newContent.innerHTML = newContentHTML;
+      c.appendChild(newContent);
+      bindStepEvents(newContent);
 
-    // Bind events to the new content
-    if (state.step === 0) {
-        const handleThemeChange = debounce((card) => {
-            state.selectedId = card.getAttribute("data-id");
-            state.sizeId = null;
-            if (card.classList.contains('quick-card')) {
-                state.sizeId = selectedItem().sizes[0].id;
-                resetCustomizations();
-            }
-            const item = selectedItem();
-            applyTheme(item);
-            const soundToPlay = card.classList.contains('quick-card') ? 'special-sound' : (item.theme?.soundId || "ding");
-            play(soundToPlay);
-            render('initial'); // Re-render without animation for theme change
-        }, 400);
-
-        els(".quick-card, .menu-card", newContent).forEach(card => {
-            card.addEventListener("click", () => handleThemeChange(card));
-        });
-
-        els("button[data-quick-add]", newContent).forEach(btn => {
-            btn.addEventListener("click", e => {
-                e.stopPropagation();
-                const itemId = e.currentTarget.getAttribute("data-quick-add");
-                const item = MENU.find(m => m.id === itemId);
-                if (item) {
-                    const cartItem = createCartItem(item);
-                    if (cartItem) {
-                        state.cart.push(cartItem);
-                        play("success");
-                        renderBottom();
-                        e.currentTarget.innerHTML = '✓ اضافه شد';
-                        e.currentTarget.disabled = true;
-                        setTimeout(() => {
-                            e.currentTarget.innerHTML = 'افزودن سریع';
-                            e.currentTarget.disabled = false;
-                        }, 1500);
-                    }
-                }
-            });
-        });
-    } else if (state.step === 1) {
-        els("button[data-size]", newContent).forEach(b => b.addEventListener("click", () => {
-            state.sizeId = b.getAttribute("data-size");
-            play("ding");
-            render('initial');
-        }));
-    } else if (state.step === 2 && it.customizable) {
-        els("button[data-free]", newContent).forEach(b => b.addEventListener("click", () => {
-            const id = b.getAttribute("data-free");
-            const v = Number(b.getAttribute("data-val"));
-            state.freeLevels = { ...state.freeLevels, [id]: v };
-            vibrate(12);
-            play("ding");
-            render('initial');
-        }));
-    } else if ((state.step === 3 && it.customizable) || (state.step === 2 && !it.customizable)) {
-        els("button[data-sauce]", newContent).forEach(b => b.addEventListener("click", () => {
-            const id = b.getAttribute("data-sauce");
-            const v = Number(b.getAttribute("data-val"));
-            state.sauceLevels = { ...state.sauceLevels, [id]: v };
-            vibrate(12);
-            play("ding");
-            render('initial');
-        }));
-    } else if (state.step === 4) {
-        const extra = el("#extraRange", newContent);
-        extra && extra.addEventListener("input", e => {
-            state.extraGrams = Number(extra.value);
-            vibrate(10);
-            renderBottom();
-            const viz = el(".extra-viz-wrapper");
-            if (viz) viz.innerHTML = renderExtraViz(selectedItem());
-        });
-        els("button[data-cheese]", newContent).forEach(b => b.addEventListener("click", () => {
-            const d = Number(b.getAttribute("data-cheese"));
-            state.cheeseSlices = Math.max(0, (state.cheeseSlices || 0) + d);
-            play("ding");
-            render('initial');
-        }));
-        els("button[data-sauce-takeaway]", newContent).forEach(b => b.addEventListener("click", () => {
-            const d = Number(b.getAttribute("data-sauce-takeaway"));
-            state.takeawaySauces = Math.max(0, (state.takeawaySauces || 0) + d);
-            play("ding");
-            render('initial');
-        }));
-        els("button[data-drink]", newContent).forEach(b => b.addEventListener("click", () => {
-            const id = b.getAttribute("data-drink");
-            const d = Number(b.getAttribute("data-d"));
-            const q = Math.max(0, (state.drinks[id] || 0) + d);
-            state.drinks = { ...state.drinks, [id]: q };
-            play("ding");
-            render('initial');
-        }));
-    } else if (state.step === 5) {
-        el("#addCart", newContent).addEventListener("click", () => {
-            state.cart.push(snapshotCurrent());
-            state.step = 0;
-            resetCustomizations();
-            state.selectedId = MENU[0].id;
-            state.sizeId = MENU[0].sizes[0].id;
-            state.drinks = Object.fromEntries(DRINKS.map(d => [d.id, 0]));
-            play("ding");
-            render('forward');
-        });
-        el("#payPrint", newContent).addEventListener("click", () => {
-            const items = [...state.cart, snapshotCurrent()];
-            state.cart = [];
-            state.checkoutItems = items;
-            try {
-                const today = new Date().toISOString().slice(0, 10);
-                const day = localStorage.getItem('hy_day') || '';
-                let seq = Number(localStorage.getItem('hy_seq') || String(ORDER_START - 1)) || 0;
-                if (day !== today) {
-                    localStorage.setItem('hy_day', today);
-                    seq = ORDER_START - 1;
-                }
-                seq += 1;
-                localStorage.setItem('hy_seq', String(seq));
-                state.orderSeq = seq;
-            } catch (e) {}
-            state.submitted = true;
-            play("success");
-            openReceipt();
-            setTimeout(() => {
-                const printBtn = el("#printBtn");
-                if (printBtn) printBtn.click();
-            }, 100);
-        });
-    }
-
-    if (direction !== 'initial') {
       requestAnimationFrame(() => {
-        newContent.classList.remove('slide-in-right', 'slide-in-left');
+        newContent.classList.remove(inClass);
       });
-    }
 
-    setTimeout(() => {
-      isNavigating = false;
-    }, 400); // Animation duration
+      setTimeout(() => {
+        isNavigating = false;
+      }, 400);
+    }
 
     renderBottom();
   }
-
-  function openCart(){
-    const m = el("#modals");
-    const cartTotal = state.cart.reduce((s,i)=>s+(i.total||0),0);
-    m.innerHTML = `
-      <div class="modal">
-        <div class="card">
-          <div style="font-weight:900;font-size:18px;margin-bottom:10px">سبد سفارش – ${state.cart.length} آیتم</div>
-          <div style="max-height:45vh;overflow:auto">
-            ${state.cart.length? state.cart.map(it=>`
-              <div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.08)">
-                <div>
-                  <div style="font-weight:800">${it.name} – ${it.sizeLabel}</div>
-                  <div style="font-size:12px;color:#cbd5e1">${Object.entries(it.drinks).filter(([,q])=>q>0).map(([id,q])=>{
-                    const d = DRINKS.find(x=>x.id===id); return (d? d.name:id) + " ×" + q;
-                  }).join("، ")||"—"}</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px">
-                  <div style="font-weight:900">${fmt(it.total)}</div>
-                  <button class="btn" data-remove="${it.id}">حذف</button>
-                </div>
-              </div>
-            `).join("") : '<div class="menu-sub">سبد خالی است.</div>'}
-          </div>
-          <div class="divider"></div>
-          <div style="display:flex;justify-content:space-between"><div class="menu-sub">جمع سبد</div><div><b>${fmt(cartTotal)}</b></div></div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn" id="closeCart">افزودن ساندویچ دیگر</button>
-            <button class="btn primary" id="checkout" ${state.cart.length?'':'disabled'}>اتمام سفارش</button>
-          </div>
-        </div>
-      </div>
-    `;
-    els("button[data-remove]", m).forEach(b=>b.addEventListener("click", ()=>{
-      const id = Number(b.getAttribute("data-remove"));
-      state.cart = state.cart.filter(x=>x.id!==id);
-      openCart();
-    }));
-    el("#closeCart").addEventListener("click", ()=>{ m.innerHTML=""; });
-    el("#checkout").addEventListener("click", ()=>{
-      state.checkoutItems = [...state.cart];
-      state.cart = [];
-      state.submitted = true;
-      openReceipt();
-    });
-    m.addEventListener("click", e=>{ if(e.target.classList.contains("modal")) m.innerHTML=""; }, { once:true });
-  }
-
-  function openReceipt(){
-    const m = el("#modals");
-    const sandwichesTotal = state.checkoutItems.reduce((s,i)=>s+(i.total||0),0);
-    const drinksTotal = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
-    const total = sandwichesTotal + drinksTotal;
-    const orderNo = state.orderSeq; // already updated
-    m.innerHTML = `
-      <div class="modal">
-        <div class="card">
-          <div style="text-align:center;font-weight:900;font-size:22px;color:#7ee7d2">سفارش ثبت شد</div>
-          <div style="text-align:center;margin-top:4px;color:#cbd5e1">شمارهٔ سفارش: <b>${orderNo}</b></div>
-          <div class="divider"></div>
-          <div style="max-height:45vh;overflow:auto">
-            ${state.checkoutItems.map((it,idx)=>`
-              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)">
-                <div><b>${idx+1}.</b> ${it.name} – ${it.sizeLabel}</div>
-                <div><b>${fmt(it.total)}</b></div>
-              </div>
-            `).join("")}
-            <div style="display:flex;justify-content:space-between;padding-top:8px">
-              <div class="menu-sub">جمع کل</div><div><b>${fmt(total)}</b></div>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn" id="printBtn">چاپ رسید</button>
-            <button class="btn primary" id="newBtn">سفارش جدید</button>
-          </div>
-        </div>
-      </div>
-    `;
-    el("#printBtn").addEventListener("click", ()=>{
-      // Build a simple print receipt
-      const w = window.open("", "_blank", "width=400,height=600");
-      if(!w) return;
-      const html = `<!doctype html><html><head><meta charset="utf-8"><title>رسید</title><style>
-        @page{ size:58mm auto; margin:0 } body{ margin:0 } .receipt{ width:58mm; padding:4mm; font:12px/1.5 monospace; }
-        .center{text-align:center} .big{font-size:16px;font-weight:700} .cut{border-top:1px dashed #000;margin:8px 0}
-      </style></head><body>
-      <div class="receipt">
-        <div class="center big">هیولا</div>
-        <div class="center">شماره سفارش: ${orderNo}</div>
-        <div class="cut"></div>
-        ${state.checkoutItems.map((it,idx)=>{
-          let detailsHtml = '';
-          const customizations = [];
-          if (it.freeLevels) { Object.entries(it.freeLevels).forEach(([id, level]) => { if (level !== 1) { const freebie = FREE.find(f => f.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (freebie && levelInfo) customizations.push(`${freebie.label}: ${levelInfo.label}`); } }); }
-          if (it.sauceLevels) { Object.entries(it.sauceLevels).forEach(([id, level]) => { if (level !== 1) { const sauce = SAUCES.find(s => s.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (sauce && levelInfo) customizations.push(`${sauce.label}: ${levelInfo.label}`); } }); }
-          if (it.extraGrams > 0) { customizations.push(`کالباس اضافه: ${it.extraGrams} گرم`); }
-          if (it.cheeseSlices > 0) { customizations.push(`پنیر اضافه: ${item.cheeseSlices} ورق`); }
-          if (customizations.length) { detailsHtml = `<div style="font-size:10px; text-align:right; padding-right:10px;">${customizations.join(' • ')}</div>`; }
-
-          const drinksHtml = Object.entries(it.drinks || {}).filter(([,q])=>q>0).map(([id,q])=>{
-            const d = DRINKS.find(x=>x.id===id);
-            return `${d.name} ×${q}`;
-          }).join(', ');
-          if (drinksHtml) {
-            detailsHtml += `<div style="font-size:10px; text-align:right; padding-right:10px; color: var(--accent);">${drinksHtml}</div>`;
-          }
-
-          return `<div><b>${idx+1}. ${it.name} – ${it.sizeLabel}</b></div>${detailsHtml}`;
-        }).join("")}
-        <div class="cut"></div>
-        <div>جمع کل <span style="float:left"><b>${fmt(total)}</b></span></div>
-        <div class="cut"></div>
-        <div class="center">از سفارش شما متشکریم</div>
-      </div>
-      <script>window.onload=()=>{window.print(); setTimeout(()=>window.close(), 400);}</script>
-      </body></html>`;
-      w.document.open(); w.document.write(html); w.document.close();
-    });
-    el("#newBtn").addEventListener("click", ()=>{
-      // Reset for next order
-      state.submitted = false;
-      state.checkoutItems = [];
-      state.cart = [];
-      state.drinks = Object.fromEntries(DRINKS.map(d=>[d.id,0]));
-      resetCustomizations();
-      state.selectedId = MENU[0].id;
-      state.sizeId = MENU[0].sizes[0].id;
-      state.step = 0;
-      render();
-      m.innerHTML = "";
-    });
-  }
-
-  function preloadImages() {
-    MENU.forEach(item => {
-      if (item.theme && item.theme.charImage) {
-        const img = new Image();
-        const src = item.theme.charImage;
-        // Handle cases where the path might be relative
-        img.src = src.startsWith('http') ? src : `https://hayola.hornspeed.com/${src}`;
-      }
-    });
-  }
-
-  // initial render
-  render();
-  preloadImages();
-
-  // PWA: register SW
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', ()=>{
-      navigator.serviceWorker.register('assets/sw.js', { scope:'./' }).catch(()=>{});
-    });
-  }
-
-})();
