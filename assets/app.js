@@ -1045,12 +1045,22 @@
     }
     const { total, cartTotal } = prices();
     const drinksPrice = Object.entries(state.drinks).reduce((s, [id, q]) => { const d = DRINKS.find(x => x.id === id); return s + (d ? d.price * q : 0); }, 0);
-    const orderTotal = cartTotal + total + drinksPrice;
+    const orderTotal = cartTotal + (state.selectedId ? total : 0);
+
+    let nextButtonText = 'بعدی';
+    if (state.step === 0 && state.cart.length > 0) {
+      nextButtonText = `پرداخت (${state.cart.length} آیتم)`;
+    } else if (state.step === 4) {
+      nextButtonText = 'افزودن به سبد و بازگشت';
+    } else if (state.step === 5) {
+      nextButtonText = 'پایان';
+    }
+
     b.innerHTML = `
       <button class="btn" ${state.step === 0 ? 'disabled' : ''} id="prevBtn">قبلی</button>
       <button class="btn" id="cartBtn">سبد (${state.cart.length})</button>
       <div class="total-badge">${state.isHappy ? '<span class="muted">جمع سفارش (با تخفیف):</span>' : 'جمع سفارش:'} <b>${fmt(orderTotal)}</b></div>
-      <button class="btn ${state.step >= 5 ? 'secondary' : 'primary'}" id="nextBtn">${state.step >= 5 ? 'پایان' : 'بعدی'}</button>
+      <button class="btn primary" id="nextBtn">${nextButtonText}</button>
     `;
     el("#prevBtn") && el("#prevBtn").addEventListener("click", () => {
       if (isNavigating) return;
@@ -1062,17 +1072,47 @@
     el("#cartBtn").addEventListener("click", () => openCart());
     el("#nextBtn").addEventListener("click", () => {
       if (isNavigating) return;
-      if (state.step === 0 && !state.selectedId) {
-        alert('لطفا یک آیتم انتخاب کنید');
+
+      if (state.step === 0) {
+        if (state.cart.length > 0 && !state.selectedId) {
+          state.step = 5; // Go directly to checkout if cart has items and no new item is being customized
+          render('forward');
+          return;
+        }
+        if (!state.selectedId) {
+          alert('لطفا یک آیتم انتخاب کنید');
+          return;
+        }
+      }
+
+      if (state.step === 4) {
+        state.cart.push(snapshotCurrent());
+        play("success");
+        // Show a quick confirmation message
+        const nextBtn = el("#nextBtn");
+        if(nextBtn) {
+          nextBtn.innerHTML = '✓ اضافه شد';
+          nextBtn.disabled = true;
+        }
+        setTimeout(() => {
+          resetCustomizations();
+          state.selectedId = null;
+          state.sizeId = null;
+          state.step = 0;
+          render('initial');
+        }, 1000);
         return;
       }
+
       if (state.step === 1 && !state.sizeId) {
         alert('لطفا یک سایز انتخاب کنید');
         return;
       }
+
+      // Default action: advance to the next step
       let nxt = state.step + 1;
-      if (nxt === 2 && !selectedItem().customizable) nxt = 4;
-      state.step = Math.min(5, nxt);
+      if (nxt === 2 && !selectedItem().customizable) nxt = 4; // Skip customization steps
+      state.step = Math.min(4, nxt); // Go up to step 4 (additives)
       render('forward');
     });
   }
