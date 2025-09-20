@@ -850,6 +850,7 @@
     state.takeawaySauces = 0;
     state.freeLevels = Object.fromEntries(FREE.map(f=>[f.id,1]));
     state.sauceLevels = Object.fromEntries(SAUCES.map(s=>[s.id,1]));
+    state.drinks = Object.fromEntries(DRINKS.map(d => [d.id, 0]));
   }
 
 
@@ -1173,7 +1174,6 @@
         resetCustomizations();
         state.selectedId = MENU[0].id;
         state.sizeId = MENU[0].sizes[0].id;
-        state.drinks = Object.fromEntries(DRINKS.map(d => [d.id, 0]));
         play("ding");
         render('forward');
       });
@@ -1197,11 +1197,68 @@
         play("success");
         openReceipt();
         setTimeout(() => {
-          const printBtn = el("#printBtn");
-          if (printBtn) printBtn.click();
+          window.print();
         }, 100);
       });
     }
+  }
+
+  function openReceipt() {
+    const modalContainer = el("#modals");
+    if (!modalContainer) return;
+
+    const { checkoutItems, orderSeq } = state;
+    const total = checkoutItems.reduce((sum, item) => sum + item.total, 0);
+    const date = new Date().toLocaleDateString('fa-IR');
+    const time = new Date().toLocaleTimeString('fa-IR');
+
+    const itemsHtml = checkoutItems.map(item => {
+      const customizations = [];
+      if (item.extraGrams > 0) customizations.push(`+ ${item.extraGrams}gr`);
+      if (item.cheeseSlices > 0) customizations.push(`+ ${item.cheeseSlices} پنیر`);
+      const drinkItems = Object.entries(item.drinks).filter(([,q]) => q > 0).map(([id, q]) => {
+        const drink = DRINKS.find(d => d.id === id);
+        return `${drink.name} (${q})`;
+      }).join(', ');
+
+      let line = `<div>- ${item.name} (${item.sizeLabel})</div>`;
+      if(customizations.length > 0) line += `<div style="padding-right:10px;font-size:10px">${customizations.join(', ')}</div>`;
+      if(drinkItems) line += `<div style="padding-right:10px;font-size:10px">${drinkItems}</div>`;
+      return line;
+    }).join('');
+
+    modalContainer.innerHTML = `
+      <div class="modal" id="receiptModal">
+        <div class="card">
+          <div class="receipt">
+            <div class="center big">${BRAND.name}</div>
+            <div class="center">${BRAND.tagline}</div>
+            <div class="cut"></div>
+            <div>شماره سفارش: ${orderSeq}</div>
+            <div>تاریخ: ${date} - ${time}</div>
+            <div class="cut"></div>
+            ${itemsHtml}
+            <div class="cut"></div>
+            <div class="big" style="text-align:left">جمع کل: ${fmt(total)}</div>
+            <div class="cut"></div>
+            <div class="center" style="font-size:10px">ممنون از خرید شما!</div>
+          </div>
+          <button id="closeReceipt" class="btn no-print" style="width:100%; margin-top: 10px;">بستن</button>
+        </div>
+      </div>
+    `;
+
+    el("#closeReceipt").addEventListener("click", () => {
+      modalContainer.innerHTML = '';
+      // Reset for next order
+      state.step = 0;
+      state.submitted = false;
+      resetCustomizations();
+      state.selectedId = null;
+      state.sizeId = null;
+      applyTheme(null); // Go back to default theme
+      render();
+    });
   }
 
   function render(direction = 'initial') {

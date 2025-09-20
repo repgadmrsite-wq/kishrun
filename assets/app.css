@@ -190,7 +190,8 @@ body.theme-transition .app-root {
 /* Step Transitions */
 #content {
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .step-content {
   position: absolute;
