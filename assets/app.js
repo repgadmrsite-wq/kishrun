@@ -1027,10 +1027,11 @@
   }
 
   function renderHeader() {
-    // This function is now only for things that change on step, like the progress bar.
     const p = el("#pbar");
     if (p) {
-      p.style.width = ( (state.step+1) / 6 ) * 100 + "%";
+      // The main flow has 6 steps (0 to 5). Step 6 is the final screen.
+      const progress = state.step >= 5 ? 100 : ((state.step + 1) / 6) * 100;
+      p.style.width = progress + "%";
     }
   }
 
@@ -1038,6 +1039,10 @@
 
   function renderBottom() {
     const b = el("#bottom");
+    if (state.step === 6) {
+      b.innerHTML = ''; // Hide buttons on thank you screen
+      return;
+    }
     const { total, cartTotal } = prices();
     const drinksPrice = Object.entries(state.drinks).reduce((s, [id, q]) => { const d = DRINKS.find(x => x.id === id); return s + (d ? d.price * q : 0); }, 0);
     const orderTotal = cartTotal + total + drinksPrice;
@@ -1074,59 +1079,88 @@
 
   function openReceipt() {
     const receiptHTML = `
-      <div id="receipt-modal" class="receipt-modal">
-        <div class="receipt-paper">
-          <div class="receipt-header">
-            <h1>${BRAND.name}</h1>
-            <p>${BRAND.tagline}</p>
-            <p>سفارش شماره: ${state.orderSeq}</p>
-            <p>${new Date().toLocaleString('fa-IR')}</p>
-          </div>
-          <div class="receipt-items">
-            ${state.checkoutItems.map(item => {
-              let details = [
-                `${item.sizeLabel}`,
-                item.extraGrams > 0 ? `${item.extraGrams} گرم اضافه` : null,
-                item.cheeseSlices > 0 ? `${item.cheeseSlices} پنیر اضافه` : null,
-                item.takeawaySauces > 0 ? `${item.takeawaySauces} سس بیرون‌بر` : null,
-              ].filter(Boolean).join('، ');
+      <div class="receipt">
+        <div class="receipt-header">
+          <h1 class="center big">${BRAND.name}</h1>
+          <p class="center">${BRAND.tagline}</p>
+          <div class="cut"></div>
+          <p>شماره سفارش: ${state.orderSeq}</p>
+          <p>تاریخ: ${new Date().toLocaleString('fa-IR')}</p>
+          <div class="cut"></div>
+        </div>
+        <div class="receipt-items">
+          ${state.checkoutItems.map(item => {
+            // Paid extras
+            let details = [
+              item.extraGrams > 0 ? `${item.extraGrams} گرم اضافه` : null,
+              item.cheeseSlices > 0 ? `${item.cheeseSlices} پنیر اضافه` : null,
+              item.takeawaySauces > 0 ? `${item.takeawaySauces} سس بیرون‌بر` : null,
+            ].filter(Boolean);
 
-              const drinkDetails = Object.entries(item.drinks)
-                .filter(([_, q]) => q > 0)
-                .map(([id, q]) => {
-                  const drink = DRINKS.find(d => d.id === id);
-                  return `${q} عدد ${drink.name}`;
-                }).join('، ');
+            // Free customizations that differ from default
+            if (item.freeLevels) {
+              Object.entries(item.freeLevels).forEach(([id, level]) => {
+                if (level !== 1) { // 1 is 'normal'
+                  const freebie = FREE.find(f => f.id === id);
+                  const levelInfo = LEVELS.find(l => l.id === level);
+                  if (freebie && levelInfo) {
+                    details.push(`${freebie.label}: ${levelInfo.label}`);
+                  }
+                }
+              });
+            }
 
-              return `
-                <div class="receipt-item">
-                  <div class="item-name">${item.name}</div>
-                  <div class="item-details">${details}</div>
-                  ${drinkDetails ? `<div class="item-details">نوشیدنی: ${drinkDetails}</div>` : ''}
-                  <div class="item-price">${fmt(item.total)}</div>
+            // Sauce customizations that differ from default
+            if (item.sauceLevels) {
+              Object.entries(item.sauceLevels).forEach(([id, level]) => {
+                if (level !== 1) {
+                  const sauce = SAUCES.find(s => s.id === id);
+                  const levelInfo = LEVELS.find(l => l.id === level);
+                  if (sauce && levelInfo) {
+                    details.push(`${sauce.label}: ${levelInfo.label}`);
+                  }
+                }
+              });
+            }
+
+            const drinkDetails = Object.entries(item.drinks)
+              .filter(([_, q]) => q > 0)
+              .map(([id, q]) => {
+                const drink = DRINKS.find(d => d.id === id);
+                return `<div><span>${q} عدد ${drink.name}</span><span>${fmt(drink.price * q)}</span></div>`;
+              }).join('');
+
+            return `
+              <div class="receipt-item">
+                <div class="item-name">
+                  <span><b>${item.name}</b> (${item.sizeLabel})</span>
+                  <span>${fmt(item.basePrice)}</span>
                 </div>
-              `;
-            }).join('')}
+                ${details.length > 0 ? `<div class="item-details">${details.map(d => `<div>+ ${d}</div>`).join('')}</div>` : ''}
+                ${drinkDetails ? `<div class="item-drinks">${drinkDetails}</div>` : ''}
+              </div>
+            `;
+          }).join('<div class="item-divider"></div>')}
+        </div>
+        <div class="cut"></div>
+        <div class="receipt-total">
+          <div class="total-line">
+            <span>جمع کل</span>
+            <span>${fmt(state.checkoutItems.reduce((sum, item) => sum + item.total, 0))}</span>
           </div>
-          <div class="receipt-total">
-            <div class="total-line">
-              <span>جمع کل</span>
+          ${state.isHappy ? `
+            <div class="total-line happy">
+              <span>تخفیف ساعت طلایی (${(DISCOUNT.percent * 100).toLocaleString('fa-IR')}٪)</span>
+              <span>-${fmt(state.checkoutItems.reduce((sum, item) => sum + (item.total / (1-DISCOUNT.percent) * DISCOUNT.percent) , 0))}</span>
+            </div>
+            <div class="total-line grand-total">
+              <span>مبلغ نهایی</span>
               <span>${fmt(state.checkoutItems.reduce((sum, item) => sum + item.total, 0))}</span>
             </div>
-            ${state.isHappy ? `
-              <div class="total-line happy">
-                <span>تخفیف ساعت طلایی (${(DISCOUNT.percent * 100).toLocaleString('fa-IR')}٪)</span>
-                <span>-${fmt(state.checkoutItems.reduce((sum, item) => sum + (item.total / (1-DISCOUNT.percent) * DISCOUNT.percent) , 0))}</span>
-              </div>
-              <div class="total-line grand-total">
-                <span>مبلغ نهایی</span>
-                <span>${fmt(state.checkoutItems.reduce((sum, item) => sum + item.total, 0))}</span>
-              </div>
-            ` : ''}
-          </div>
-          <div class="receipt-footer">
-            <p>از خرید شما متشکریم!</p>
-          </div>
+          ` : ''}
+        </div>
+        <div class="receipt-footer center">
+          <p>از خرید شما متشکریم!</p>
         </div>
       </div>
     `;
@@ -1249,8 +1283,7 @@
       });
       el("#payPrint", contentElement).addEventListener("click", () => {
         const items = [...state.cart, snapshotCurrent()];
-        state.cart = [];
-        state.checkoutItems = items;
+        state.checkoutItems = items; // Keep cart items in case user goes back
         try {
           const today = new Date().toISOString().slice(0, 10);
           const day = localStorage.getItem('hy_day') || '';
@@ -1263,12 +1296,45 @@
           localStorage.setItem('hy_seq', String(seq));
           state.orderSeq = seq;
         } catch (e) {}
-        state.submitted = true;
+
         play("success");
-        openReceipt();
+        openReceipt(); // Prepare the receipt
+
         setTimeout(() => {
-          window.print();
+          window.print(); // Trigger printing
+
+          // After printing, transition to the thank you screen
+          state.submitted = true;
+          state.step = 6;
+          render('forward');
         }, 100);
+      });
+    } else if (state.step === 6) {
+      el("#reprintBtn", contentElement).addEventListener("click", () => {
+        play("ding");
+        window.print();
+      });
+
+      el("#newOrderBtn", contentElement).addEventListener("click", () => {
+        play("success");
+        // Reset all state for a new order
+        state.cart = [];
+        state.checkoutItems = [];
+        resetCustomizations();
+        state.selectedId = null;
+        state.sizeId = null;
+        state.step = 0;
+        state.submitted = false;
+
+        // Clean up printable area
+        const printable = el('#printable-area');
+        if (printable) printable.remove();
+
+        // Reset theme to default
+        applyTheme(null);
+
+        // Render the first step
+        render('initial');
       });
     }
   }
@@ -1304,6 +1370,17 @@
       const { total, cartTotal } = prices();
       const orderTotal = cartTotal + total + drinksPrice;
       newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۶) کنترل نهایی و تحویل' : '۶) مرور و ثبت'}</h2><div class="preview-wrap" style="overflow-x: auto; display: flex; gap: 10px; padding-bottom: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.2); margin-bottom: 14px;">${[...state.cart, snapshotCurrent()].map(item => `<div class="preview-item" style="flex: 0 0 120px; text-align: center;"><div class="preview" style="height: 120px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 5px;">${generateSandwichSVG(item)}</div><div style="font-size: 12px; font-weight: 700; margin-top: 8px; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 2px 6px; color: white;">${item.name}</div></div>`).join('')}</div><div class="review-grid" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))"><div class="order-summary" style="display:flex; flex-direction:column; gap:8px;">${[...state.cart, snapshotCurrent()].map(item => {const customizations = [];if (item.freeLevels) { Object.entries(item.freeLevels).forEach(([id, level]) => { if (level !== 1) { const freebie = FREE.find(f => f.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (freebie && levelInfo) customizations.push(`${freebie.label}: ${levelInfo.label}`); } }); }if (item.sauceLevels) { Object.entries(item.sauceLevels).forEach(([id, level]) => { if (level !== 1) { const sauce = SAUCES.find(s => s.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (sauce && levelInfo) customizations.push(`${sauce.label}: ${levelInfo.label}`); } }); }if (item.extraGrams > 0) { customizations.push(`کالباس اضافه: ${item.extraGrams} گرم`); }if (item.cheeseSlices > 0) { customizations.push(`پنیر اضافه: ${item.cheeseSlices} ورق`); }return `<div class="summary-item" style="border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px;"><div style="font-weight: 800; font-size: 18px;">${item.name} <span style="font-size: 14px; color: var(--muted);">(${item.sizeLabel})</span></div>${customizations.length ? `<div style="font-size: 12px; color: var(--accent); padding-top: 4px;">${customizations.join(' • ')}</div>` : ''}</div>`;}).join('')}<div class="divider"></div><div style="display:flex;justify-content:space-between; font-size: 18px; font-weight: 900;"><div>جمع کل</div><div>${fmt(orderTotal)}</div></div></div><div class="no-print" style="display:grid;gap:8px;align-content:start"><button class="btn" id="addCart">افزودن به سبد و ساخت ساندویچ بعدی</button><button class="btn primary" id="payPrint">پرداخت و چاپ</button><div style="font-size:12px;color:#cbd5e1">برای چند سفارش: آیتم را به سبد اضافه کن؛ در پایان پرداخت و چاپ.</div></div></div></section>`;
+    } else if (state.step === 6) {
+      newContentHTML = `
+        <section class="section thank-you-screen">
+            <h2>سفارش شما با موفقیت ثبت شد!</h2>
+            <p style="margin: 10px 0 20px; font-size: 18px;">شماره سفارش شما: <b style="font-size: 24px; color: var(--primary-theme);">${state.orderSeq}</b></p>
+            <div class="thank-you-actions">
+                <button class="btn" id="reprintBtn">چاپ مجدد رسید</button>
+                <button class="btn primary" id="newOrderBtn">شروع سفارش جدید</button>
+            </div>
+        </section>
+      `;
     }
 
     if (direction === 'initial') {
