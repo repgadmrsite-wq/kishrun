@@ -1,21 +1,21 @@
 {
-  "name": "هیولا | ساخت آنلاین ساندویچ سرد",
+  "name": "هیولا",
   "short_name": "هیولا",
-  "start_url": "/index.php",
+  "description": "ساخت آنلاین ساندویچ سرد",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b1020",
   "theme_color": "#0ee3a8",
-  "description": "ساخت آنلاین ساندویچ سرد هیولا",
+  "background_color": "#ffffff",
   "icons": [
     {
-      "src": "icons/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "img/logo-sullivan.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
     },
     {
-      "src": "icons/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "img/logo-sullivan.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
     }
   ]
 }

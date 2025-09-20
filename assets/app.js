@@ -1175,8 +1175,27 @@
     });
   }
 
-  function openReceipt() {
-    const receiptHTML = `
+  function printReceiptPopup() {
+    const receiptHTML = generateReceiptHTML();
+    const printWindow = window.open('', 'PRINT', 'height=600,width=400');
+
+    printWindow.document.write('<html><head><title>Receipt</title>');
+    printWindow.document.write('<link rel="stylesheet" href="assets/app.css">');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(receiptHTML);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    printWindow.onload = function() {
+      printWindow.print();
+      printWindow.close();
+    };
+  }
+
+  function generateReceiptHTML() {
+    return `
       <div class="receipt">
         <div class="receipt-header">
           <h1 class="center big">${BRAND.name}</h1>
@@ -1262,16 +1281,6 @@
         </div>
       </div>
     `;
-
-    let printable = el('#printable-area');
-    if (!printable) {
-      printable = document.createElement('div');
-      printable.id = 'printable-area';
-      document.body.appendChild(printable);
-    }
-    printable.innerHTML = receiptHTML;
-    el('#app').classList.add('no-print');
-    printable.classList.add('print-only');
   }
 
   function bindStepEvents(contentElement) {
@@ -1394,21 +1403,17 @@
         } catch (e) {}
 
         play("success");
-        openReceipt(); // Prepare the receipt
+        printReceiptPopup();
 
-        setTimeout(() => {
-          window.print(); // Trigger printing
-
-          // After printing, transition to the thank you screen
-          state.submitted = true;
-          state.step = 6;
-          render('forward');
-        }, 100);
+        // After triggering print, transition to the thank you screen
+        state.submitted = true;
+        state.step = 6;
+        render('forward');
       });
     } else if (state.step === 6) {
       el("#reprintBtn", contentElement).addEventListener("click", () => {
         play("ding");
-        window.print();
+        printReceiptPopup();
       });
 
       el("#newOrderBtn", contentElement).addEventListener("click", () => {
@@ -1446,7 +1451,7 @@
 
     if(state.step===0){
       const TOP = MENU.filter(m => m.isSpecial).map(m => m.id);
-      newContentHTML = `<section class="section"><h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2><div class="quick-grid">${TOP.map(id=>{const t = MENU.find(m=>m.id===id);return `<div class="quick-card" data-id="${t.id}"><div class="card-image-wrapper"><img src="${t.img||''}" alt=""/></div><div><div class="quick-title">${t.emoji || ''} ${t.name}</div><div class="menu-description">${t.description || ''}</div><div class="tags-container">${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="quick-sub">${state.isHappy? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(t.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}</div>`;}).join("")}</div><div class="divider"></div><div class="menu-grid">${MENU.map(m=>`<div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}"><div class="card-image-wrapper"><img src="${m.img||''}" alt=""/></div><div><div class="menu-title">${m.emoji || ''} ${m.name}</div><div class="menu-description">${m.description || ''}</div><div class="tags-container">${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="menu-sub">${state.isHappy? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(m.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}</div>`).join("")}</div></section>`;
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2><div class="quick-grid">${TOP.map(id=>{const t = MENU.find(m=>m.id===id);return `<div class="quick-card" data-id="${t.id}"><div class="card-image-wrapper"><img src="${t.img||''}" alt=""/></div><div><div class="quick-title">${t.emoji || ''} ${t.name}</div><div class="menu-description">${t.description || ''}</div><div class="tags-container">${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="quick-sub">${state.isHappy? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(t.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}</div>`;}).join("")}</div><div class="divider"></div><div class="menu-grid">${MENU.map(m=>`<div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}"><div class="card-image-wrapper"><img src="${m.img||''}" alt=""/></div><div><div class="menu-title">${m.emoji || ''} ${m.name}</div><div class="menu-description">${m.description || ''}</div><div class="tags-container">${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="menu-sub">${state.isHappy? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(t.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}</div>`).join("")}</div></section>`;
     } else if(state.step===1){
       const isPatMat = it.theme?.className === 'theme-pat-mat';
       newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۲) انتخاب مقیاس پروژه' : '۲) انتخاب سایز / وزن'}</h2><div class="quick-grid" style="grid-template-columns:repeat(${it.sizes.length},minmax(0,1fr))">${it.sizes.map(s=>`<button class="btn ${state.sizeId===s.id?'primary':''}" data-size="${s.id}"><div style="font-weight:900">${s.label}</div><div style="font-size:12px;color:#cbd5e1">${fmt(s.price)}</div></button>`).join("")}</div></section>`;
@@ -1488,20 +1493,8 @@
     newContent.className = 'step-content';
     newContent.innerHTML = newContentHTML;
 
-    // Set initial state for fade-in animation
-    if (direction !== 'initial') {
-      newContent.classList.add('fade-in');
-    }
-
     c.appendChild(newContent);
     bindStepEvents(newContent);
-
-    // Trigger the fade-in animation
-    if (direction !== 'initial') {
-      requestAnimationFrame(() => {
-        newContent.classList.remove('fade-in');
-      });
-    }
 
     setTimeout(() => {
       isNavigating = false;

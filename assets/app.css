@@ -148,8 +148,8 @@ body.theme-transition .app-root {
   transform: scale(1) translateX(20%);
   animation-name: float, pulse-glow;
   animation-duration: 6s, 3s;
-  animation-timing-function: ease-in-out, ease-in-out;
-  animation-iteration-count: infinite, infinite;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 /* Quick Add Button */
@@ -187,18 +187,10 @@ body.theme-transition .app-root {
   flex-grow: 1;
 }
 
-/* Step Transitions */
-#content {
-  display: grid;
-  min-height: 55vh;
-}
-.step-content {
-  grid-area: 1 / 1;
-  width: 100%;
-  transition: opacity .4s ease-in-out;
-}
-.step-content.fade-in {
-  opacity: 0;
+#content{
+  min-height:55vh; /* prevent layout jump between steps */
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 /* --- Theme: Olivieh --- */
@@ -781,8 +773,8 @@ body.theme-transition .app-root {
   /* The idle animations are now the default for the visible image in this theme */
   animation-name: panda-float, pulse-glow;
   animation-duration: 6s, 3s;
-  animation-timing-function: ease-in-out, ease-in-out;
-  animation-iteration-count: infinite, infinite;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 @keyframes panda-ink-reveal {
@@ -1181,72 +1173,17 @@ input[type=range]::-moz-range-thumb {
 /* SVG preview wrapper */
 .preview{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:10px}
 
-/* SVG preview wrapper */
-.preview{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:10px}
-
-/* Cart Modal */
-.modal .card {
-  max-height: 90vh;
+/* Final Review Screen */
+.final-review-cart {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-.cart-items {
-  overflow-y: auto;
-  flex-grow: 1;
-  padding: 5px;
-  margin: 0 -5px;
-}
-.cart-item {
-  display: flex;
-  align-items: center;
+.final-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
-  padding: 12px 8px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-.cart-item:last-child {
-  border-bottom: none;
-}
-.cart-item .item-info {
-  flex-grow: 1;
-}
-.cart-item .item-info small {
-  color: var(--muted);
-  font-size: 12px;
-  display: block;
-}
-.cart-item .item-price {
-  font-weight: 700;
-}
-.cart-item .btn-remove {
-  background: var(--danger);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  transition: transform .2s;
-  flex-shrink: 0;
-}
-.cart-item .btn-remove:hover {
-  transform: scale(1.1);
-}
-.cart-total {
-  display: flex;
-  justify-content: space-between;
-  font-size: 18px;
-  font-weight: 900;
-  padding: 16px 0;
-}
-.cart-actions {
-  display: flex;
-  gap: 12px;
-}
-.cart-actions .btn {
-  flex-grow: 1;
-  padding: 14px;
 }
 
 /* Thank You Screen */
@@ -2180,6 +2117,6 @@ input[type=range]::-moz-range-thumb {
   transform: translate(20%, 0); /* Reset initial transform */
   animation-name: pat-mat-wobble, pulse-glow; /* Combine wobble with existing pulse */
   animation-duration: 5s, 3s;
-  animation-timing-function: ease-in-out, ease-in-out;
-  animation-iteration-count: infinite, infinite;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
