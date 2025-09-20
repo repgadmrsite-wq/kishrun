@@ -190,13 +190,12 @@ body.theme-transition .app-root {
 /* Step Transitions */
 #content {
   display: grid;
-  min-height: 55vh; /* Keep this to prevent layout jump on initial load */
+  min-height: 55vh;
 }
 .step-content {
   grid-area: 1 / 1;
-  /* position: absolute; REMOVED to allow content to flow naturally */
   width: 100%;
-  transition: opacity .4s ease-in-out; /* REMOVED transform from transition */
+  transition: opacity .4s ease-in-out;
 }
 .step-content.slide-out-left,
 .step-content.slide-in-right,

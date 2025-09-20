@@ -850,7 +850,6 @@
     state.takeawaySauces = 0;
     state.freeLevels = Object.fromEntries(FREE.map(f=>[f.id,1]));
     state.sauceLevels = Object.fromEntries(SAUCES.map(s=>[s.id,1]));
-    state.drinks = Object.fromEntries(DRINKS.map(d => [d.id, 0]));
   }
 
 
@@ -1203,64 +1202,6 @@
     }
   }
 
-  function openReceipt() {
-    const modalContainer = el("#modals");
-    if (!modalContainer) return;
-
-    const { checkoutItems, orderSeq } = state;
-    const total = checkoutItems.reduce((sum, item) => sum + item.total, 0);
-    const date = new Date().toLocaleDateString('fa-IR');
-    const time = new Date().toLocaleTimeString('fa-IR');
-
-    const itemsHtml = checkoutItems.map(item => {
-      const customizations = [];
-      if (item.extraGrams > 0) customizations.push(`+ ${item.extraGrams}gr`);
-      if (item.cheeseSlices > 0) customizations.push(`+ ${item.cheeseSlices} پنیر`);
-      const drinkItems = Object.entries(item.drinks).filter(([,q]) => q > 0).map(([id, q]) => {
-        const drink = DRINKS.find(d => d.id === id);
-        return `${drink.name} (${q})`;
-      }).join(', ');
-
-      let line = `<div>- ${item.name} (${item.sizeLabel})</div>`;
-      if(customizations.length > 0) line += `<div style="padding-right:10px;font-size:10px">${customizations.join(', ')}</div>`;
-      if(drinkItems) line += `<div style="padding-right:10px;font-size:10px">${drinkItems}</div>`;
-      return line;
-    }).join('');
-
-    modalContainer.innerHTML = `
-      <div class="modal" id="receiptModal">
-        <div class="card">
-          <div class="receipt">
-            <div class="center big">${BRAND.name}</div>
-            <div class="center">${BRAND.tagline}</div>
-            <div class="cut"></div>
-            <div>شماره سفارش: ${orderSeq}</div>
-            <div>تاریخ: ${date} - ${time}</div>
-            <div class="cut"></div>
-            ${itemsHtml}
-            <div class="cut"></div>
-            <div class="big" style="text-align:left">جمع کل: ${fmt(total)}</div>
-            <div class="cut"></div>
-            <div class="center" style="font-size:10px">ممنون از خرید شما!</div>
-          </div>
-          <button id="closeReceipt" class="btn no-print" style="width:100%; margin-top: 10px;">بستن</button>
-        </div>
-      </div>
-    `;
-
-    el("#closeReceipt").addEventListener("click", () => {
-      modalContainer.innerHTML = '';
-      // Reset for next order
-      state.step = 0;
-      state.submitted = false;
-      resetCustomizations();
-      state.selectedId = null;
-      state.sizeId = null;
-      applyTheme(null); // Go back to default theme
-      render();
-    });
-  }
-
   function render(direction = 'initial') {
     if (isNavigating && direction !== 'initial') return;
 
@@ -1272,7 +1213,7 @@
 
     if(state.step===0){
       const TOP = MENU.filter(m => m.isSpecial).map(m => m.id);
-      newContentHTML = `<section class="section"><h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2><div class="quick-grid">${TOP.map(id=>{const t = MENU.find(m=>m.id===id);return `<div class="quick-card" data-id="${t.id}"><div class="card-image-wrapper"><img src="${t.img||''}" alt=""/></div><div><div class="quick-title">${t.emoji || ''} ${t.name}</div><div class="menu-description">${t.description || ''}</div><div class="tags-container">${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="quick-sub">${state.isHappy? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(t.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}</div>`;}).join("")}</div><div class="divider"></div><div class="menu-grid">${MENU.map(m=>`<div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}"><div class="card-image-wrapper"><img src="${m.img||''}" alt=""/></div><div><div class="menu-title">${m.emoji || ''} ${m.name}</div><div class="menu-description">${m.description || ''}</div><div class="tags-container">${(m.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="menu-sub">${state.isHappy? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(m.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}</div>`).join("")}</div></section>`;
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> انتخاب سرآشپز هیولا</h2><div class="quick-grid">${TOP.map(id=>{const t = MENU.find(m=>m.id===id);return `<div class="quick-card" data-id="${t.id}"><div class="card-image-wrapper"><img src="${t.img||''}" alt=""/></div><div><div class="quick-title">${t.emoji || ''} ${t.name}</div><div class="menu-description">${t.description || ''}</div><div class="tags-container">${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="quick-sub">${state.isHappy? `<span><del>${fmt(t.sizes[0].price)}</del> ${fmt(t.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(t.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${t.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪ تخفیف</div>' : ''}</div>`;}).join("")}</div><div class="divider"></div><div class="menu-grid">${MENU.map(m=>`<div class="menu-card ${state.selectedId===m.id?'active':''} ${state.isHappy ? 'happy-hour-active' : ''}" data-id="${m.id}"><div class="card-image-wrapper"><img src="${m.img||''}" alt=""/></div><div><div class="menu-title">${m.emoji || ''} ${m.name}</div><div class="menu-description">${m.description || ''}</div><div class="tags-container">${(t.tags || []).map(tag => `<span class="tag-label">${tag}</span>`).join('')}</div><div class="menu-sub">${state.isHappy? `<span><del>${fmt(m.sizes[0].price)}</del> ${fmt(m.sizes[0].price * (1-DISCOUNT.percent))}</span>`: `<span>از ${fmt(m.sizes[0].price)}</span>`}</div><div class="card-actions"><button class="btn quick-add-btn" data-quick-add="${m.id}">افزودن سریع</button></div></div>${state.isHappy ? '<div class="happy-badge">۱۰٪</div>' : ''}</div>`).join("")}</div></section>`;
     } else if(state.step===1){
       const isPatMat = it.theme?.className === 'theme-pat-mat';
       newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۲) انتخاب مقیاس پروژه' : '۲) انتخاب سایز / وزن'}</h2><div class="quick-grid" style="grid-template-columns:repeat(${it.sizes.length},minmax(0,1fr))">${it.sizes.map(s=>`<button class="btn ${state.sizeId===s.id?'primary':''}" data-size="${s.id}"><div style="font-weight:900">${s.label}</div><div style="font-size:12px;color:#cbd5e1">${fmt(s.price)}</div></button>`).join("")}</div></section>`;
@@ -1333,6 +1274,4 @@
 
     renderBottom();
   }
-
-  render();
 })();
