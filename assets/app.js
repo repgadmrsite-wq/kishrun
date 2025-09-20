@@ -1077,6 +1077,64 @@
     });
   }
 
+  function openCart() {
+    const cartTotal = state.cart.reduce((sum, item) => sum + item.total, 0);
+    const modalHTML = `
+      <div class="modal" id="cartModal">
+        <div class="card">
+          <h2><span class="dot"></span> سبد خرید شما</h2>
+          <div class="cart-items">
+            ${state.cart.length === 0
+              ? `<p>سبد خرید شما خالی است.</p>`
+              : state.cart.map((item, index) => `
+                <div class="cart-item">
+                  <div class="item-info">
+                    <b>${item.name}</b>
+                    <small>${item.sizeLabel}</small>
+                  </div>
+                  <div class="item-price">${fmt(item.total)}</div>
+                  <button class="btn-remove" data-remove-index="${index}">×</button>
+                </div>
+              `).join('')
+            }
+          </div>
+          <div class="divider"></div>
+          <div class="cart-total">
+            <span>جمع کل سبد:</span>
+            <b>${fmt(cartTotal)}</b>
+          </div>
+          <div class="cart-actions">
+            <button class="btn" id="closeCartBtn">ادامه خرید</button>
+            <button class="btn primary" id="checkoutBtn" ${state.cart.length === 0 ? 'disabled' : ''}>پرداخت نهایی</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    el("#modals").innerHTML = modalHTML;
+
+    // Event Listeners
+    el("#closeCartBtn").addEventListener("click", () => {
+      el("#modals").innerHTML = '';
+    });
+
+    el("#checkoutBtn").addEventListener("click", () => {
+      el("#modals").innerHTML = '';
+      state.step = 5;
+      render('forward');
+    });
+
+    els(".btn-remove").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const indexToRemove = parseInt(e.currentTarget.getAttribute('data-remove-index'), 10);
+        state.cart.splice(indexToRemove, 1);
+        play('ding');
+        openCart(); // Re-render the cart modal
+        renderBottom(); // Update the cart count in the footer
+      });
+    });
+  }
+
   function openReceipt() {
     const receiptHTML = `
       <div class="receipt">
@@ -1272,18 +1330,16 @@
         render('initial');
       }));
     } else if (state.step === 5) {
-      el("#addCart", contentElement).addEventListener("click", () => {
-        state.cart.push(snapshotCurrent());
-        state.step = 0;
-        resetCustomizations();
-        state.selectedId = MENU[0].id;
-        state.sizeId = MENU[0].sizes[0].id;
-        play("ding");
-        render('forward');
-      });
       el("#payPrint", contentElement).addEventListener("click", () => {
-        const items = [...state.cart, snapshotCurrent()];
-        state.checkoutItems = items; // Keep cart items in case user goes back
+        // Final checkout is based only on what's in the cart.
+        if (state.cart.length === 0) {
+          alert("سبد خرید شما خالی است!");
+          state.step = 0;
+          render('initial');
+          return;
+        }
+        state.checkoutItems = [...state.cart];
+        state.cart = []; // Clear the cart after confirming checkout
         try {
           const today = new Date().toISOString().slice(0, 10);
           const day = localStorage.getItem('hy_day') || '';
@@ -1366,10 +1422,8 @@
       newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۵) تهیه قطعات یدکی' : '۵) افزودنی‌ها'}</h2>${(it.customizable && it.extra.unitPrice>0)?`<div class="slider-wrap" style="margin-bottom: 20px;"><div style="font-weight:700;margin-bottom:6px">کالباس اضافه</div><input type="range" min="0" max="200" step="${it.extra.step}" value="${state.extraGrams}" id="extraRange"/><div class="range-meta"><span>افزایش: ${state.extraGrams} گرم</span><span>+${fmt((Math.floor(state.extraGrams/it.extra.step))*it.extra.unitPrice)}</span></div><div class="extra-viz-wrapper">${renderExtraViz(it)}</div></div>`:''}<div style="font-weight:700;margin-bottom:6px">افزودنی‌های پولی</div><div class="drinks"><div class="drink"><div style="display:flex;align-items:center;gap:10px"><img src="img/addon-gouda-slice.webp" alt="پنیر گودا"/><div><div class="name">پنیر گودا ورقه‌ای</div><div style="font-size:12px;color:#cbd5e1">${fmt(CHEESE_PRICE)} / ورق</div></div></div><div class="qty"><button data-cheese="-1">−</button><div class="n">${state.cheeseSlices||0}</div><button data-cheese="1">+</button></div></div><div class="drink"><div style="display:flex;align-items:center;gap:10px"><img src="https://hayola.hornspeed.com/img/addon-sauce.webp" alt="سس تک نفره"/><div><div class="name">سس تک نفره بیرون بر</div><div style="font-size:12px;color:#cbd5e1">${fmt(SAUCE_PRICE)} / عدد</div></div></div><div class="qty"><button data-sauce-takeaway="-1">−</button><div class="n">${state.takeawaySauces||0}</div><button data-sauce-takeaway="1">+</button></div></div><div class="divider" style="margin: 12px 0;"></div>${DRINKS.map(d=>`<div class="drink"><div style="display:flex;align-items:center;gap:10px"><img src="${d.img||''}" alt=""/><div><div class="name">${d.name}</div><div style="font-size:12px;color:#cbd5e1">${fmt(d.price)} / عدد</div></div></div><div class="qty"><button data-drink="${d.id}" data-d="-1">−</button><div class="n">${state.drinks[d.id]||0}</div><button data-drink="${d.id}" data-d="1">+</button></div></div>`).join("")}</div><div style="text-align:right;margin-top:8px;font-size:13px;color:#cbd5e1">هزینه نوشیدنی‌ها: <b>${fmt(drinksPrice)}</b></div></div></section>`;
     } else if(state.step===5){
       const isPatMat = it.theme?.className === 'theme-pat-mat';
-      const drinksPrice = Object.entries(state.drinks).reduce((s,[id,q])=>{ const d = DRINKS.find(x=>x.id===id); return s + (d? d.price*q : 0); }, 0);
-      const { total, cartTotal } = prices();
-      const orderTotal = cartTotal + total + drinksPrice;
-      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۶) کنترل نهایی و تحویل' : '۶) مرور و ثبت'}</h2><div class="preview-wrap" style="overflow-x: auto; display: flex; gap: 10px; padding-bottom: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.2); margin-bottom: 14px;">${[...state.cart, snapshotCurrent()].map(item => `<div class="preview-item" style="flex: 0 0 120px; text-align: center;"><div class="preview" style="height: 120px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 5px;">${generateSandwichSVG(item)}</div><div style="font-size: 12px; font-weight: 700; margin-top: 8px; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 2px 6px; color: white;">${item.name}</div></div>`).join('')}</div><div class="review-grid" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))"><div class="order-summary" style="display:flex; flex-direction:column; gap:8px;">${[...state.cart, snapshotCurrent()].map(item => {const customizations = [];if (item.freeLevels) { Object.entries(item.freeLevels).forEach(([id, level]) => { if (level !== 1) { const freebie = FREE.find(f => f.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (freebie && levelInfo) customizations.push(`${freebie.label}: ${levelInfo.label}`); } }); }if (item.sauceLevels) { Object.entries(item.sauceLevels).forEach(([id, level]) => { if (level !== 1) { const sauce = SAUCES.find(s => s.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (sauce && levelInfo) customizations.push(`${sauce.label}: ${levelInfo.label}`); } }); }if (item.extraGrams > 0) { customizations.push(`کالباس اضافه: ${item.extraGrams} گرم`); }if (item.cheeseSlices > 0) { customizations.push(`پنیر اضافه: ${item.cheeseSlices} ورق`); }return `<div class="summary-item" style="border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px;"><div style="font-weight: 800; font-size: 18px;">${item.name} <span style="font-size: 14px; color: var(--muted);">(${item.sizeLabel})</span></div>${customizations.length ? `<div style="font-size: 12px; color: var(--accent); padding-top: 4px;">${customizations.join(' • ')}</div>` : ''}</div>`;}).join('')}<div class="divider"></div><div style="display:flex;justify-content:space-between; font-size: 18px; font-weight: 900;"><div>جمع کل</div><div>${fmt(orderTotal)}</div></div></div><div class="no-print" style="display:grid;gap:8px;align-content:start"><button class="btn" id="addCart">افزودن به سبد و ساخت ساندویچ بعدی</button><button class="btn primary" id="payPrint">پرداخت و چاپ</button><div style="font-size:12px;color:#cbd5e1">برای چند سفارش: آیتم را به سبد اضافه کن؛ در پایان پرداخت و چاپ.</div></div></div></section>`;
+      const cartTotal = state.cart.reduce((sum, item) => sum + item.total, 0);
+      newContentHTML = `<section class="section"><h2><span class="dot"></span> ${isPatMat ? '۶) کنترل نهایی و تحویل' : '۶) مرور و ثبت'}</h2><div class="preview-wrap" style="overflow-x: auto; display: flex; gap: 10px; padding-bottom: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.2); margin-bottom: 14px;">${state.cart.map(item => `<div class="preview-item" style="flex: 0 0 120px; text-align: center;"><div class="preview" style="height: 120px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 5px;">${generateSandwichSVG(item)}</div><div style="font-size: 12px; font-weight: 700; margin-top: 8px; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 2px 6px; color: white;">${item.name}</div></div>`).join('')}</div><div class="review-grid" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))"><div class="order-summary" style="display:flex; flex-direction:column; gap:8px;">${state.cart.map(item => {const customizations = [];if (item.freeLevels) { Object.entries(item.freeLevels).forEach(([id, level]) => { if (level !== 1) { const freebie = FREE.find(f => f.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (freebie && levelInfo) customizations.push(`${freebie.label}: ${levelInfo.label}`); } }); }if (item.sauceLevels) { Object.entries(item.sauceLevels).forEach(([id, level]) => { if (level !== 1) { const sauce = SAUCES.find(s => s.id === id); const levelInfo = LEVELS.find(l => l.id === level); if (sauce && levelInfo) customizations.push(`${sauce.label}: ${levelInfo.label}`); } }); }if (item.extraGrams > 0) { customizations.push(`کالباس اضافه: ${item.extraGrams} گرم`); }if (item.cheeseSlices > 0) { customizations.push(`پنیر اضافه: ${item.cheeseSlices} ورق`); }return `<div class="summary-item" style="border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 8px;"><div style="font-weight: 800; font-size: 18px;">${item.name} <span style="font-size: 14px; color: var(--muted);">(${item.sizeLabel})</span></div>${customizations.length ? `<div style="font-size: 12px; color: var(--accent); padding-top: 4px;">${customizations.join(' • ')}</div>` : ''}</div>`;}).join('')}<div class="divider"></div><div style="display:flex;justify-content:space-between; font-size: 18px; font-weight: 900;"><div>جمع کل</div><div>${fmt(cartTotal)}</div></div></div><div class="no-print" style="display:grid;gap:8px;align-content:start"><button class="btn primary" id="payPrint">پرداخت و چاپ نهایی</button></div></div></section>`;
     } else if (state.step === 6) {
       newContentHTML = `
         <section class="section thank-you-screen">
@@ -1383,42 +1437,35 @@
       `;
     }
 
-    if (direction === 'initial') {
-      const oldContent = el('.step-content', c);
-      if (oldContent) {
-        oldContent.remove();
-      }
-      const newContent = document.createElement('div');
-      newContent.className = 'step-content';
-      newContent.innerHTML = newContentHTML;
-      c.appendChild(newContent);
-      bindStepEvents(newContent);
-      isNavigating = false;
-    } else {
-      isNavigating = true;
-      const oldContent = el('.step-content', c);
-      if (oldContent) {
-        const outClass = direction === 'forward' ? 'slide-out-left' : 'slide-out-right';
-        oldContent.classList.add(outClass);
-        oldContent.addEventListener('transitionend', () => oldContent.remove(), { once: true });
-      }
-
-      const newContent = document.createElement('div');
-      newContent.className = 'step-content';
-      const inClass = direction === 'forward' ? 'slide-in-right' : 'slide-in-left';
-      newContent.classList.add(inClass);
-      newContent.innerHTML = newContentHTML;
-      c.appendChild(newContent);
-      bindStepEvents(newContent);
-
-      requestAnimationFrame(() => {
-        newContent.classList.remove(inClass);
-      });
-
-      setTimeout(() => {
-        isNavigating = false;
-      }, 400);
+    // Simplified render logic
+    isNavigating = true;
+    const oldContent = el('.step-content', c);
+    if (oldContent) {
+      oldContent.remove(); // Remove old content immediately
     }
+
+    const newContent = document.createElement('div');
+    newContent.className = 'step-content';
+    newContent.innerHTML = newContentHTML;
+
+    // Set initial state for fade-in animation
+    if (direction !== 'initial') {
+      newContent.classList.add('fade-in');
+    }
+
+    c.appendChild(newContent);
+    bindStepEvents(newContent);
+
+    // Trigger the fade-in animation
+    if (direction !== 'initial') {
+      requestAnimationFrame(() => {
+        newContent.classList.remove('fade-in');
+      });
+    }
+
+    setTimeout(() => {
+      isNavigating = false;
+    }, 50); // Shorten the navigation lock
 
     renderBottom();
   }
